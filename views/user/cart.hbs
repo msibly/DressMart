@@ -1,0 +1,104 @@
+{{#unless products}}
+<div class="container">
+  <h2 class="text-center fw-bold m-2 p-2">Cart is Empty! </h2>
+</div>
+{{else}}
+<div class="container">
+  <h2 class="text-center fw-bold text-decoration-underline m-2 p-2"><u>Cart Items</u></h2>
+  <table class="table p-2">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Quantity</th>
+        <th scope="col"></th>
+        <th scope="col">Purchase Price</th>
+        <th scope="col">Remove Item</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each products}}
+      <tr>
+        <td><img src="/product-images/{{this.products._id}}.jpg" alt="product Img" style="height:60px ;width: 80px;">
+        </td>
+        <td>{{this.products.Name}}</td>
+        <td>{{this.products.Description}}</td>
+        <td><span id="{{this.products._id}}">{{this.quantity}}</span></td>
+        <td><button type="button" class="btn btn-success"
+            onclick="changeQuantity('{{this._id}}','{{this.products._id}}','{{../user}}',1)">Add Product</button></td>
+        <td>{{this.products.finalPrice}}</td>
+        <td><button type="button" class="btn btn-danger"
+            onclick="changeQuantity('{{this._id}}','{{this.products._id}}','{{../user}}',-1)">Remove</button></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <hr>
+
+  <br>
+  <h3 style="float: right;">Total Cost: <span id="total">{{total}}</span></h3><br><br>
+  <p style="float: right;">You have got additional off from total Amount of Rs. <span id="grandTotal"><strong>{{grandTotal}} </strong></span></p>
+  <br>
+  <br>
+  <a href="/place-order" class="float-right btn btn-success">Place Order</a>
+
+</div>
+
+{{/unless}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function changeQuantity(cartId, prodId, user, count) {
+    console.log("UserId" + user)
+    let quantity = parseInt(document.getElementById(prodId).innerHTML)
+    count = parseInt(count)
+    $.ajax({
+      url: '/change-product-quantity',
+      data: {
+        user: user,
+        cart: cartId,
+        product: prodId,
+        count: count,
+        quantity: quantity
+      },
+      method: 'post',
+      success: (response) => {
+        if ((quantity == 1) && (count == -1)) {
+          alert("product Removed From cart")
+          location.reload()
+        }
+        else {
+          if (response.removeProduct) {
+            alert("product Removed From cart")
+            document.getElementById('total').innerHTML = response.total
+            document.getElementById('grandTotal').innerHTML = response.grandTotal
+            location.reload()
+          } else if (response.update) {
+
+            document.getElementById(prodId).innerHTML = quantity + count
+            document.getElementById('total').innerHTML = response.total
+            document.getElementById('grandTotal').innerHTML = response.grandTotal
+
+          }
+        }
+      }
+    })
+  }
+</script>

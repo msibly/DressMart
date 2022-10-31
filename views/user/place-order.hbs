@@ -1,0 +1,406 @@
+<div class="container mt-5">
+  <div>
+
+  </div>
+  <div class="row">
+    {{!-- {{#if userAddress}}
+    <div class="col-lg-6 border" style="padding: 10px; margin-right:30px ">
+      <h2 class="m-3"> Select Address</h2>
+      {{#each userAddress}}
+      <div class="pl-lg-4 border p-3 m-3">
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div class="form-group focused">
+              <input type="radio" id="html" name="fav_language" value="{{@index}}">
+              <label class="form-control-label" for="input-address">Address</label>
+              <input class="form-control form-control-alternative" placeholder="Home Address"
+                value='{{this.address.address}}' type="text" disabled>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="form-group focused">
+              <label class="form-control-label" for="input-city">City</label>
+              <input type="text" class="form-control form-control-alternative" placeholder="City"
+                value="{{this.address.city}}" disabled>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group focused">
+              <label class="form-control-label" for="input-country">State</label>
+              <input type="text" class="form-control form-control-alternative" placeholder="Country"
+                value="{{this.address.state}}" disabled>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group focused">
+              <label class="form-control-label" for="input-country">Country</label>
+              <input type="text" class="form-control form-control-alternative" placeholder="Country"
+                value="{{this.address.country}}" disabled>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="form-control-label" for="input-country">Postal code</label>
+              <input type="number" class="form-control form-control-alternative" placeholder="Postal code"
+                value="{{this.address.pincode}}" disabled>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div> --}}
+
+    {{!-- <div class="col-6 border p-4 mt-5">
+      <h6 class="heading-small text-muted m-4"><u>Add Contact information</u></h6>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group focused ">
+            <label class="form-control-label" for="input-address">Address</label>
+            <input id="input-address" name="address" class="form-control form-control-alternative"
+              placeholder="Home Address" value="Padinjare Makkiyil Vandanam" type="text">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="form-group focused">
+            <label class="form-control-label" for="input-city">City</label>
+            <input type="text" id="input-city" name="city" class="form-control form-control-alternative"
+              placeholder="City" value="Alappuzha">
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group focused">
+            <label class="form-control-label" for="input-country">State</label>
+            <input type="text" id="input-state" name="state" class="form-control form-control-alternative"
+              placeholder="Country" value="Kerala">
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group focused">
+            <label class="form-control-label" for="input-country">Country</label>
+            <input type="text" id="input-country" name="country" class="form-control form-control-alternative"
+              placeholder="Country" value="India">
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label class="form-control-label" for="input-country">Postal code</label>
+            <input type="number" id="input-postal-code" name="pincode" class="form-control form-control-alternative"
+              placeholder="Postal code" value="688005">
+          </div>
+        </div>
+        <div class="col-8 text-right mt-lg-5 mb-md-4">
+          <button type="button" class="btn btn-sm btn-primary float-right col-6 "
+            onclick="updateAddress('{{userDetails._id}}')">Use this Address</button>
+        </div>
+        <div class="ml-5 mb-2">
+          <span style="color: red; font-weight: bold;" id="erorMessage"></span>
+        </div>
+      </div>
+    </div> --}}
+    {{!-- {{else}} --}}
+    <div class="col-lg-6 border p-lg-4 col-md-11 col-sm-12">
+      <h6 class="heading-small text-muted m-4"><u>Add Contact information</u></h6>
+      <div class="row">
+        {{!-- <form action="/order-complete" method="post"> --}}
+          <div class="col-md-12">
+            <div class="form-group focused ">
+              <label class="form-control-label" for="input-address">Address</label>
+              <input id="input-address" name="address" class="col-12 form-control form-control-alternative"
+                placeholder="Home Address" value="Padinjare Makkiyil" type="text">
+            </div>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="form-group focused">
+            <label class="form-control-label" for="input-city">City</label>
+            <input type="text" id="input-city" name="city" class="form-control form-control-alternative"
+              placeholder="City" value="Alappuzha">
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group focused">
+            <label class="form-control-label" for="input-country">State</label>
+            <input type="text" id="input-state" name="state" class="form-control form-control-alternative"
+              placeholder="State" value="Kerala">
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group focused">
+            <label class="form-control-label" for="input-country">Country</label>
+            <input type="text" id="input-country" name="country" class="form-control form-control-alternative"
+              placeholder="Country" value="India">
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label class="form-control-label" for="input-country">Postal code</label>
+            <input type="number" id="input-postal-code" name="pincode" class="form-control form-control-alternative"
+              placeholder="Postal code" value="688005">
+          </div>
+          <div class="form-group">
+            <label class="form-control-label" for="input-country">Contact Number</label>
+            <input type="number" id="input-contact" name="contact" class="form-control form-control-alternative"
+              placeholder="Contact Number" value="9846712342">
+          </div>
+        </div>
+
+        <div class="ml-5 mb-2">
+          <span style="color: red; font-weight: bold;" id="erorMessage"></span>
+        </div>
+      </div>
+      {{!-- <div class="col-8 text-right mt-lg-5 mb-md-4">
+        <button type="submit" class="btn btn-sm btn-primary float-right col-8 " onclick="return Valid()">
+          Use this Address & Checkout
+        </button>
+      </div> --}}
+      {{!-- </form> --}}
+    </div>
+    {{!-- {{/if}} --}}
+    <div class="row col-lg-6">
+      <div class="col-lg-4"></div>
+      <div class="col-lg-8 p-2">
+        <div class="col-lg-12 border">
+          <h6 class="pt-5" style="font-size: 20px;">
+            <span id="oldTotalAmount-heading"></span>
+            <span style="color: tomato;" id="oldTotalAmount"></span>
+          </h6>
+          <span id="couponDet"></span>
+          <h6 class="pt-5" style="font-size: 20px;">Total Amount : <span style="color: tomato;"
+              id="totalAmount">{{total.total}}</span></h6>
+              <p>You have got additional off from total Amount of Rs. <strong>{{total.grandTotal}}</strong></p>
+              <hr>
+          <div class="row ml-1 mb-2">
+            <input type="text" name="coupon" id="couponCode" placeholder="Enter coupon code">
+            <div>
+              <span id="couponButton">
+            <button type="submit" class="btn-primary ml-2 float-right" onclick="verifyCoupon({{total}})">Add coupon</button>
+
+              </span>
+            </div>
+          </div>
+          
+          <span id="result"></span>
+          <span id="error" style="color: tomato;"></span>
+          <hr>
+          <div class="form-check mb-3">
+            <p class="h3" style="margin-bottom: 20px;"><strong><u>Payment Method</u></strong></p>
+            <div class="mb-3">
+              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="COD" checked>
+              <label class="form-check-label" for="flexRadioDefault1">COD</label>
+            </div>
+            <div class="mb-3">
+              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
+                value="RazorPay" >
+              <label class="form-check-label" for="flexRadioDefault2">RazorPay</label>
+            </div>
+            <div class="mb-3">
+              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3"
+                value="PayPal">
+              <label class="form-check-label" for="flexRadioDefault3">PayPal</label>
+            </div>
+            <div>
+              <button  class="btn btn-primary mb-2 float-right" onclick="placeorder()">Checkout</button><br>
+              <p class="mt-5 text-muted"><small>Please ensure payment method before submit</small></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+
+<script>
+  function placeorder() {
+    var radioPaymentMethod = $('input[type=radio][name=flexRadioDefault]:checked').val();
+    let address = document.getElementById('input-address').value
+    let city = document.getElementById('input-city').value
+    let state = document.getElementById('input-state').value
+    let country = document.getElementById('input-country').value
+    let pinCode = document.getElementById('input-postal-code').value
+    let contact = document.getElementById('input-contact').value
+    let totalCost = document.getElementById('totalAmount').innerHTML
+    var couponCode=document.getElementById('couponCode').value
+
+    alert(radioPaymentMethod + " " + address + " " + city + " " + state + " " + country + " " + pinCode + " " + contact + " " + totalCost)
+    if(radioPaymentMethod){
+      $.ajax({
+      url: '/order-complete',
+      header: { 'Cache-Control': 'no-cache' },
+      method: 'post',
+      data: {
+        address: address,
+        city: city,
+        state: state,
+        country: country,
+        pinCode: pinCode,
+        contact: contact,
+        paymentMethod: radioPaymentMethod,
+        totalCost: totalCost,
+        couponCode:couponCode
+      },
+      success: (response) => {
+        if (response.status) {
+          if (response.cod) {
+            window.location.href = '/order-success'
+          } else if(response.razorpay) {
+            transactRazorpay(response.order)
+          }else{
+
+            alert("PAypal")
+            //alert( response.link)
+            window.location.href = response.link
+          }
+        }
+        else {
+          window.location.href = '/login'
+        }
+      }
+    })
+
+    function transactRazorpay(order) {
+      //console.log("Order",order)
+      var options = {
+        "key": "rzp_test_R176b8vJonLPgE", // Enter the Key ID generated from the Dashboard
+        "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "DressMart",
+        "description": "Test Transaction",
+        //"image": "https://example.com/your_logo",
+        "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response) {
+          console.log("Handler response",response)
+          {{!-- alert(response.razorpay_payment_id);
+          alert(response.razorpay_order_id);
+          alert(response.razorpay_signature); --}}
+          verifyPayment(response,order)
+        },
+        "prefill": {
+          "name": "Muhammed Sibly",
+          "email": "sibly26462@gmail.com",
+          "contact": "9846712342"
+        },
+        "notes": {
+          "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+          "color": "#3399cc"
+        }
+      };
+
+      var rzp1 = new Razorpay(options);
+      rzp1.open();
+    }
+    function verifyPayment(payment,order){
+      //alert("Verify Payment")
+      console.log("payment\n",payment)
+      console.log("order\n",order)
+
+      $.ajax({
+        //alert("ajax")
+        url:'/verify-payment',
+        data:{
+          payment,
+          order
+        },
+        method:'post',
+        success:(response)=>{
+          if(response.status){
+          window.location.href = '/order-success'
+          }
+          else{
+            //alert("Payment Failed") 
+            window.location.href = '/cart'
+          }
+        }
+      })
+    }
+    }
+    else{
+      alert("Sleect a Payment")
+    }
+  }
+  //-----------------------------------------------------------------------------
+
+
+        {{!-- // Order is created on the server and the order id is returned
+        function createOrder () {
+          return fetch("/api/orders", {
+            method: "post",
+            // use the "body" param to optionally pass additional order information
+            // like product ids or amount
+          })
+          .then((response) => response.json())
+          .then((order) => order.id);
+        } --}}
+        // Finalize the transaction on the server after payer approval
+        onApprove: (data, actions) => {
+          return fetch(`/api/orders/${data.orderID}/capture`, {
+            method: "post",
+          })
+          .then((response) => response.json())
+          .then((orderData) => {
+            // Successful capture! For dev/demo purposes:
+            console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+            const transaction = orderData.purchase_units[0].payments.captures[0];
+            alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`);
+            // When ready to go live, remove the alert and show a success message within this page. For example:
+            // const element = document.getElementById('paypal-button-container');
+            // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+            // Or go to another URL:  actions.redirect('thank_you.html');
+          });
+        }
+
+
+
+
+
+
+
+
+  //-----------------------------------------------------------------------------
+
+</script>
+
+<script>
+  function verifyCoupon(totalAmount){
+    var couponCode=document.getElementById('couponCode').value
+    let oldTotalCost = totalAmount
+    if(couponCode.length<5){
+      alert("Please enter valied coupon code")
+    }
+    else{
+      alert("Coupon Applied "+couponCode+" "+oldTotalCost)
+      $.ajax({
+        url:'/verify-coupon',
+        data:{
+          totalAmount:totalAmount,
+          couponCode:couponCode
+        },
+        method:'post',
+        success:(response)=>{
+          if(response.status){
+            document.getElementById('oldTotalAmount-heading').innerHTML="Previous Total Amount : "
+            document.getElementById('oldTotalAmount').innerHTML=oldTotalCost+`<hr>`
+            document.getElementById('couponDet').innerHTML=`Coupon Amount: `+response.price
+            document.getElementById('totalAmount').innerHTML=response.totalAmount
+            document.getElementById('couponButton').innerHTML=`<button type="button" class="btn-primary ml-2 float-right" disabled>Add coupon</button>`
+            document.getElementById('error').innerHTML=""
+          }
+          else{
+            document.getElementById('error').innerHTML="Invalid Coupon"
+            
+          }
+          
+        }
+      })
+    }
+  }
+</script>

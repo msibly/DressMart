@@ -1,0 +1,82 @@
+<div class="container">
+    <div class="row d-flex justify-content-center">
+
+        <div class="col-6">
+            <h2 class="text-center">Add Coupon</h2>
+            <form class="center" action="/coupon-add" method="post">
+                <label for="">Coupon Code</label>
+                <input type="text" name="name" id="name" class="form-control">
+                <label for="" class="mt-2">Offer Price</label>
+                <input type="text" name="price" id="price" class="form-control">
+                {{#if err}}
+                <div class="mt-2">
+                    <span  style="color: red;font-weight: bold;">{{err}}</span>
+                </div>
+                {{/if}}
+                <div>
+                    <span id="error" style="color: red;font-weight: bold;"></span>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success mt-4 ml-auto " onclick="return Validate()">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <hr>
+    <div class="m-5" style="background: #fff;">
+        <table class="table table table-striped table-bordered" id="example">
+            <thead>
+                <tr>
+                    <th scope="col">Coupon Code</th>
+                    <th scope="col">Discount Price</th>
+                    <th>Status</th>
+                    <th scope="col" class="text-center">Option</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {{#each couponCollect}}
+                <tr>
+                    <td>{{this.name}}</td>
+                    <td>{{this.price}}</td>
+                    <td>
+                        {{#if this.status}}
+                            Used
+                        {{else}}
+                            Not Used Coupon
+                        {{/if}}
+                    </td>
+                    <td class="text-center">
+                        {{!-- <a href="/product-category-view?name={{this.Name}}" class="btn btn-success">View</a> --}}
+                        {{!-- <a href="/edit-category?id={{this._id}}?name={{this.name}}" class="btn btn-primary">Edit</a> --}}
+                        <a href="/delete-couon?id={{this._id}}" class="btn btn-danger"
+                            onclick="return confirm('Are you want to delete {{this.Name}} ?')"> Delete </a>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+        });
+    </script>
+    <script>
+        function Validate(){
+            var code=document.getElementById('name').value
+            var price=document.getElementById('price').value
+            if((code.length<5)||(name.price<1)){
+                document.getElementById("error").innerHTML="Empty feilds/ Minimum Length for coupon code is 5 "
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+    </script>

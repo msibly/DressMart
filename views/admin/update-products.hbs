@@ -1,0 +1,41 @@
+<section>
+    <div class="container mt-4">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-6 justify">
+                <h2 class="text-center">Update Product</h2>
+                <form action="/product-update/{{prodId}}" enctype="multipart/form-data" method="post">
+                    <label for="">Name</label>
+                    <input type="text" name="Name" class="form-control" value="{{product.Name}}">
+                    <label for="">Category</label>
+                    <input type="text" name="Category" class="form-control" value="{{product.Category}}">
+                    <label for="">Price</label>
+                    <input type="number" name="Price" class="form-control" value="{{product.Price}}" id="actualPrice">
+                    <label for="">Offer in <strong>%</strong></label>
+                    <input type="number" name="Offer" class="form-control" value="{{product.Offer}}" onblur="getFinalPrice()" id="offer">
+                    <label for="">Final Price</strong></label>
+                    <input type="number" name="finalPrice" class="form-control" value="{{product.finalPrice}}" id="finalPrice">
+                    <label for="">Description</label>
+                    <input type="text" name="Description" class="form-control" value="{{product.Description}}">
+                    <label for="">Quantity</label>
+                    <input type="text" name="quantity" class="form-control" value="{{product.quantity}}">
+                    <label for="">Image</label>
+                    <img class="p-2" src="/product-images/{{product._id}}.jpg" alt="" style="width: 100px;height:auto">
+                    <input type="file" class="form-control" name="Image">
+                    <button type="submit" class="btn btn-success mt-4">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function getFinalPrice(){
+        var actualPrice=document.getElementById('actualPrice').value
+        var offer=document.getElementById('offer').value
+        var finalPrice=actualPrice-(actualPrice*offer/100)
+        finalPrice=Math.round(finalPrice)
+        //alert(finalPrice)
+        //alert(actualPrice+" "+offer)
+        document.getElementById('finalPrice').value=finalPrice
+    }
+</script>

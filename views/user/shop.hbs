@@ -1,0 +1,69 @@
+
+    <!-- Product Section Begin -->
+    <section class="product spad mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="filter__controls">
+                        <li class="active" data-filter="*">Best Sellers</li>
+                        <li data-filter=".new-arrivals">New Arrivals</li>
+                        <li data-filter=".hot-sales">Hot Sales</li>
+                    </ul>
+                </div>
+            </div>
+
+                        <div class="row product__filter">
+                {{#each products}}
+                <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
+                    <div class="product__item">
+                        <a href="/product-detail/?id={{this._id}}&Category={{this.Category}}">
+                            <div class="product__item__pic set-bg" data-setbg="/product-images/{{this._id}}.jpg">
+                            </div>
+                        </a>
+                        <div class="product__item__text">
+                            <h6>{{this.Name}}</h6>
+                            <h5>
+                                {{this.Offer}}% Off
+                            </h5>
+                            <h5 class="mt-2">
+                            <del>{{this.Price}}</del> &nbsp;Now Rs. {{this.finalPrice}}
+                            </h5>
+                            <button onclick="addToCart('{{this._id}}')" class="btn btn-primary col-12">Add to Cart </button>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        <div id="app" class="container">
+            <ul class="page">
+                <a href="/shop?page=1"><li class="page__numbers">First</li></a>
+                <a href="/shop?page={{math page '-' 1}}"><li class="page__numbers">Previ..</li></a>
+                <a href="#"><li class="page__numbers">{{page}}</li></a>
+                <a href="/shop?page={{math page '+' 1}}"><li class="page__numbers">Next</li></a>
+                <a href="/shop?page={{pagesCount}}"><li class="page__numbers">Last</li></a>
+
+                {{!-- <li class="page__numbers"><a href="#">Previous</a></li>
+                <li class="page__numbers active">2</li>
+                <li class="page__numbers">1</li>
+                <li class="page__numbers">3</li>
+                <li class="page__numbers">4</li>
+                <li class="page__numbers">5</li>
+                <li class="page__numbers">6</li>
+                <li class="page__dots">...</li>
+                <li class="page__numbers"> 10</li>
+                <li class="page__btn"><span class="material-icons">Next</span></li>
+                <li class="page__btn"><span class="material-icons">Last</span></li> --}}
+            </ul>
+        </div>
+    </section>
+
+    <!-- Product Section End -->
+    
+    {{!-- JS FILES  --}}
+     <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha512-Ua/7Woz9L5O0cwB/aYexmgoaD7lw3dWe9FvXejVdgqu71gRog3oJgjSWQR55fwWx+WKuk8cl7UwA1RS6QCadFA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+   <script integrity = "sha384-JZR6Spejh4U02d8j0t6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmY1" crossorigin = "anonymous"> </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"> </script>
+    <script src="/js/script.js "> </script>

@@ -1,0 +1,44 @@
+<div class="container">
+
+    <div class="m-5" style="background: #fff;">
+        <table class="table table table-striped table-bordered" id="example">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Contact</th>
+                    <th scope="col" class="text-center">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each users}}
+                <tr>
+                    <td>{{this.name}}</td>
+                    <td>{{this.email}}</td>
+                    <td>{{this.contact}}</td>
+                    {{!-- <td>{{this.Status}}</td> --}}
+                    <td class="text-center">
+                        {{#if this.status}}
+                        <a href="/block?id={{this._id}}" class="btn btn-success text-center">Block</a>
+                        {{else}}
+                        <a href="/unblock?id={{this._id}}" class="btn btn-danger text-center">Unblock</a>
+                        {{/if}}
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>  
+        </table>
+
+
+    </div>
+
+</div>
+
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
+<script>
+    $(document).ready(function () {
+    $('#example').DataTable();
+});
+</script>

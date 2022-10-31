@@ -1,0 +1,103 @@
+<section>
+    <div class="container mt-4">
+        <div class="row d-flex justify-content-center">
+            <div class="col-6">
+                <div class="m-5" id="zoomC">
+                    {{!-- <img src="/product-images/{{ProductInDet._id}}.jpg" alt="product Image" style="height: 200;" class="img-zoom-container" > --}}
+                </div>
+                
+                <div class="p-2">
+                    <h2 class="text-center">{{ProductInDet.Name}}</h2>
+                    <p class="text-center">{{ProductInDet.Description}}<p/>
+                    <h3 style="color: tomato;" class="text-center">Rs. {{ProductInDet.Price}}</h3>
+                    <button  onclick="addToCart('{{ProductInDet._id}}')" class="btn btn-primary col-12">Add to Cart </button>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+</section>
+<hr>
+
+<section class="product spad mt-5">
+    <div class="container">
+        <div class="row product__filter">
+            {{#each products}}
+            <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals m-auto">
+                <div class="product__item">
+                    <a href="/product-detail/?id={{this._id}}&Category={{this.Category}}">
+                        <div class="product__item__pic set-bg" data-setbg="/product-images/{{this._id}}.jpg">
+                        </div>
+                    </a>
+                    <div class="product__item__text">
+                        <h6>{{this.Name}}</h6>
+                        <h5 class="mt-1">
+                                {{this.Price}}
+                            </h5>
+                        <button  onclick="addToCart('{{this._id}}')" class="btn btn-primary col-12">Add to Cart </button>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</section>
+<style>
+
+#zoomC {
+  /* (A) DIMENSIONS */
+  height: 300px;
+  width: 400px;
+ 
+  /* (B) BACKGROUND IMAGE */
+  background: url("/product-images/{{ProductInDet._id}}.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+
+</style>
+
+<script>
+    // CREDITS : https://www.cssscript.com/image-zoom-pan-hover-detail-view/
+var addZoom = (target) => {
+  // (A) GET CONTAINER + IMAGE SOURCE
+  let container = document.getElementById(target),
+      imgsrc = container.currentStyle || window.getComputedStyle(container, false);
+      imgsrc = imgsrc.backgroundImage.slice(4, -1).replace(/"/g, "");
+ 
+  // (B) LOAD IMAGE + ATTACH ZOOM
+  let img = new Image();
+  img.src = imgsrc;
+  img.onload = () => {
+    // (B1) CALCULATE ZOOM RATIO
+    let ratio = img.naturalHeight / img.naturalWidth,
+        percentage = ratio * 100 + "%";
+ 
+    // (B2) ATTACH ZOOM ON MOUSE MOVE
+    container.onmousemove = (e) => {
+      let rect = e.target.getBoundingClientRect(),
+          xPos = e.clientX - rect.left,
+          yPos = e.clientY - rect.top,
+          xPercent = xPos / (container.clientWidth / 100) + "%",
+          yPercent = yPos / ((container.clientWidth * ratio) / 100) + "%";
+ 
+      Object.assign(container.style, {
+        backgroundPosition: xPercent + " " + yPercent,
+        backgroundSize: img.naturalWidth + "px"
+      });
+    };
+ 
+    // (B3) RESET ZOOM ON MOUSE LEAVE
+    container.onmouseleave = (e) => {
+      Object.assign(container.style, {
+        backgroundPosition: "center",
+        backgroundSize: "cover"
+      });
+    };
+  }
+};
+ 
+// (C) ATTACH FOLLOW ZOOM
+window.onload = () => { addZoom("zoomC"); };
+</script>

@@ -1,0 +1,143 @@
+
+
+<div class="container" style="height: 100vh; margin: 0,10px,0,10px;">
+  <div class="row justify-content-md-center">
+      <div class="col-md-4 text-center">
+        <div class="row d-flex justify-content-center">
+          <div class="col-sm-12 mt-5 bgWhite ">
+            {{!-- <h2 class="mt-3">
+                DressMart
+            </h2> --}}
+            <div class="title">
+              Verify Contact Number for
+            </div>
+            {{!-- <div> --}}
+              <h5 class="mt-3" style="color: tomato; font-weight: bold;">{{mob}}</h5>
+            {{!-- </div>             --}}
+            <div class="col-sm-12 col-md-12">
+                <form action="/verify-Mobile" method="post" class="mt-5">
+                  <input class="otp" id="digi1" name="digit1" type="text" oninput='digitValidate(this)' onkeyup='tabChange(1)' maxlength=1 >
+                  <input class="otp" id="digi2" name="digit2" type="text" oninput='digitValidate(this)' onkeyup='tabChange(2)' maxlength=1 >
+                  <input class="otp" id="digi3" name="digit3" type="text" oninput='digitValidate(this)' onkeyup='tabChange(3)' maxlength=1 >
+                  <input class="otp" id="digi4" name="digit4" type="text" oninput='digitValidate(this)'onkeyup='tabChange(4)' maxlength=1 >
+                  <button class='btn btn-dark btn-block mt-4 mb-4 customBtn' type="submit" onclick="return validate()">Verify</button>
+                </form>
+            <hr class="mt-4">
+            <span>wrong Number? </span><a class="mb-5" href="/register"><u>Re-register</u></a>
+            <hr >
+            {{#if loginError}}
+            <p style="color: red;">{{loginError}}</p>
+            {{/if}}
+                
+            </div>
+             
+            
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+<style>
+    body{
+  background:#eee;
+}
+
+.bgWhite{
+  background:white;
+  box-shadow:0px 3px 6px 0px #cacaca;
+}
+
+.title{
+  font-weight:600;
+  margin-top:20px;
+  font-size:24px
+}
+
+.customBtn{
+  border-radius:0px;
+  padding:10px;
+}
+
+form input{
+  display:inline-block;
+  width:50px;
+  height:50px;
+  text-align:center;
+}
+</style>
+
+<script>
+    let num=[]
+    let digitValidate = function(ele){
+    console.log(ele.value);
+    ele.value = ele.value.replace(/[^0-9]/g,'');
+    num.push(ele.value)
+}
+
+let tabChange = function(val){
+    let ele = document.querySelectorAll('input');
+    if(ele[val-1].value != ''){
+      ele[val].focus()
+    }else if(ele[val-1].value == ''){
+      ele[val-2].focus()
+    }
+ }
+
+ {{!-- function submitOtp(){
+    let x=num.map(Number)
+    let mob=document.getElementById('mob').innerHTML
+    alert(mob)
+    console.log("Number : "+x)
+    let otp=""
+    for(let i=0;i<num.length;i++)
+    {
+        otp=otp+num[i]
+    }
+    otp=Number(otp)
+      console.log("OTP "+otp)
+    
+    if(otp<1000)
+    {
+      alert("Eneter the OTP")
+    }
+    else{
+      $.ajax({
+        url:'/otp-submit',
+        data:{
+          otp:otp,
+          mobile:mob
+        },
+        method:'get',
+        success:(response)=>{
+          if(response){
+            console.log("HO")
+            url:('/dressMart-home'),
+            method:'post'
+          }
+          else{
+            console.log("hhf")
+          }
+        }
+      })
+    }
+} --}}
+
+function validate(){
+   digit1=document.getElementById('digi1').value
+   digit2=document.getElementById('digi2').value
+   digit3=document.getElementById('digi3').value
+   digit4=document.getElementById('digi4').value
+  if((document.getElementById('digi1').value)==""||(document.getElementById('digi2').value)==""||(document.getElementById('digi3').value)==""||(document.getElementById('digi4').value)==""){
+    alert("OTP is missing, Please enter OTP")
+    return false
+  }
+  else{
+    return true
+  }
+
+}
+</script>

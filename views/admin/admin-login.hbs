@@ -1,0 +1,43 @@
+
+ <!-- Login Page & Signup Page-->
+    <div class="container vh-100 d-flex justify-content-center  align-items-center">
+        <div class="col-lg-6 shadow  p-5"  style="background: #fff !important;">
+            <!-- Pills navs -->
+            <ul class="nav nav-pills nav-justified mb-3">
+                <li class="nav-item m-2 " >
+                    <p class="nav-link shadow active">Admin</p>
+                </li>
+            </ul>
+            <!-- Pills navs -->
+
+            <!-- Pills content -->
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+                    <form class="text-center" action="/admin-login"  method="post" role="form">
+
+                        <h2 class="text-center mb-3">LOGIN</h2>
+
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <input type="text" id="loginName" class="form-control" placeholder="Email or username" value="admin" name="uname"/>
+                        </div>
+
+                        <!-- Password input -->
+                        <div class="form-outline mb-4">
+                            <input type="password" id="loginPassword" class="form-control" placeholder="password" value="admin" name="password"/>
+                        </div>
+                        {{#if loginError}}
+                            <p style="color: red;">{{loginError}}</p>
+                        {{/if}}
+
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+                    </form>
+                </div>
+            </div>
+            <!-- Pills content -->
+
+        </div>
+    </div>
+    </div>

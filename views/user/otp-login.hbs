@@ -1,0 +1,46 @@
+
+ <div class="container vh-100 d-flex justify-content-center justify-content-center align-items-center" >
+        <div class="col-lg-6 shadow  p-5 border-round56" style="background-color: #fff !important;" >
+            <!-- Pills navs -->
+            <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+                <li class="nav-item shadow m-2 border border-dark" role="presentation">
+                    <a class="nav-link" href="/login" style="color: tomato; font-weight: bold;">Login</a>
+                </li>
+                <li class="nav-item shadow m-2 border border-dark" role="presentation">
+                    <a class="nav-link" href="/register" style="color: tomato;font-weight: bold;">Register</a>
+                </li>
+            </ul>
+            
+                <h2 class="text-center">Login Using OTP</h2>
+                <hr>  
+                <br>
+            <!-- Pills navs -->
+
+            <!-- Pills content -->
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+                    <form class="text-center" action="/get-otp" method="post" role="form">
+                    
+                        {{!-- <h2 class="text-center">LOGIN</h2> --}}
+
+                        <!-- Mobile Input -->
+                        <div class="form-outline mb-4">
+
+                            <input type="text" id="loginMobile" class="form-control" placeholder="Enter Mobile Number" name="loginMobile" value="9846712342"/>
+                        </div>
+                         {{#if loginError}}
+                            <p style="color: red;">{{loginError}}</p>
+                        {{/if}}
+                        {{#if loginBlock}}
+                            <p style="color: red;">{{loginBlock}}</p>
+                        {{/if}}
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-dark btn-block mb-4">Send OTP</button>
+                    </form>
+                </div>
+            </div>
+            <!-- Pills content -->
+        </div>
+    </div>
+    </div>

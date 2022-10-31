@@ -1,0 +1,180 @@
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="m-5" style="background: #fff;">
+            <h2 class="text-center fw-bold text-decoration-underline">Orders</h2>
+            <table class="table table table-striped table-bordered text-center " id="example">
+
+                <thead class="text-center">
+                    <tr>
+                        {{!-- <th>Sl#</th> --}}
+                        <th scope="col" class="text-center">Order_Date</th>
+                        <th scope="col" class="text-center">Product Name</th>
+                        <th scope="col" class="text-center">Price</th>
+                        <th scope="col" class="text-center">Quantity</th>
+                        <th scope="col" class="text-center">Billing Address</th>
+                        <th scope="col" class="text-center">Contact Number</th>
+                        <th scope="col" class="text-center">Payment Mode</th>
+                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col" class="text-center">Status</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each orderList}}
+                    {{!-- {{#each this.orders}} --}}
+                    {{#each this.productDetails}}
+                    {{!-- <td>{{@../key}}</td> --}}
+                    {{!-- <td>
+                        <h2>{{@index}}
+                    </td> --}}
+                    <td>{{../this.date}}</td>
+                    <td>{{this.name}}</td>
+                    <td>{{this.price}}</td>
+                    <td>{{this.quantity}}</td>
+                    <td>{{../this.addressDetails.address}}, {{../this.addressDetails.city}},
+                        {{../this.addressDetails.state}}, {{../this.addressDetails.country}},
+                        {{../this.addressDetails.pinCode}}</td>
+                    <td>{{../this.addressDetails.contact}}</td>
+                    <td>{{../this.paymentMode}}
+                        {{!-- <h2>{{math this.price "+" 4}}</h2> --}}
+                    </td>
+                    <td class="text-center">
+                        <span id="cancel-{{../this._id}},{{this._id}}">
+                            {{#if this.status}}
+                            <select class="Select"
+                                onchange="changeStatus('{{../this.userId}}','{{../this._id}}','{{this._id}}');"
+                                id="{{../this._id}},{{this._id}}">
+                                <option value="{{this.status}}">{{this.status}}</option>
+
+                                {{#unless (stringCompare this.status 'Shipped')}}
+                                <option value="Shipped">Shipped</option>
+
+                                {{/unless}}
+                                <option value="Cancel">Cancel</option>
+                            </select>
+                            {{else}}
+                            <div style="background-color: rgb(186, 27, 27); color: white; border-radius: 5px;">
+                                &nbsp Canceled &nbsp
+                            </div>
+                            {{/if}}
+                        </span>
+                    </td>
+                    {{#if this.status}}
+                    <td id="status-{{../this._id}},{{this._id}}">
+                        <div style="background-color: rgb(27, 186, 27); color: white; border-radius: 5px;">
+                            {{this.status}}
+                        </div>
+
+                        {{else}}
+
+                    <td>
+                        <div style="background-color: rgb(186, 27, 27); color: white; border-radius: 5px;">
+                            &nbspCanceled&nbsp
+                        </div>
+                    </td>
+                    {{/if}}
+                    </td>
+                    </tr>
+                    {{/each}}
+                    {{!-- {{/each}} --}}
+                    {{/each}}
+                </tbody>
+            </table>
+
+
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    function changeStatus(userId, orderId, productId) {
+        alert("hi")
+        var selectBox = document.getElementById("statusBox");
+        var selectedValue = document.getElementById(orderId + "," + productId).value
+        alert(selectedValue + " - " + userId + " - " + orderId + " - " + productId);
+
+        {
+            $.ajax({
+                url: '/order-update?orderId=' + orderId + '&productId=' + productId + '&userId=' + userId +'&status='+selectedValue,
+                method: 'get',
+                success: (response) => {
+                    if (response.status) {
+                        alert(selectedValue)
+                        let SelectId = orderId + "," + productId
+                        document.getElementById("status-" + orderId + "," + productId).innerHTML = selectedValue
+
+                    }
+                    else {
+                        alert("Not Success")
+                        document.getElementById("cancel-" + orderId + "," + productId).innerHTML = "Canceled"
+                        document.getElementById("status-" + orderId + "," + productId).innerHTM = "Canceled"
+                    }
+                }
+            })
+        }
+
+    }
+</script>
+<script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
+<script>
+
+    $(document).ready(function () {        
+        var table = $('#example').DataTable({
+            "order": [[ 0, 'desc' ]],
+            dom: 'Bfrtip',
+            buttons: [{
+                extend: "print",
+                text: "Print",
+                exportOptions: {
+                    //columns: ":visible"
+                    columns: function (idx, data, node) {
+                        if (node.innerHTML == "Action" || node.hidden)
+                            return false;
+                        return true;
+                    }
+                }
+            },
+            {
+                extend: "excel",
+                text: "Excel",
+                exportOptions: {
+                    //columns: ":visible"
+                    columns: function (idx, data, node) {
+                        if (node.innerHTML == "Action" || node.hidden)
+                            return false;
+                        return true;
+                    }
+                }
+            },
+            {
+                extend: "pdf",
+                text: "PDF",
+                exportOptions: {
+                    //columns: ":visible"
+                    columns: function (idx, data, node) {
+                        if (node.innerHTML == "Action" || node.hidden)
+                            return false;
+                        return true;
+                    }
+                }
+            }
+            ],
+        });
+    });
+    
+
+
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>

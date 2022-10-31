@@ -1,0 +1,378 @@
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+
+{{!-- <body> --}}
+  {{!-- {{#each userDetails}} --}}
+  <div class="main-content">
+    <div class="container mt-7">
+      <!-- Table -->
+      {{!-- <h2 class="mb-5">My Account Card</h2> --}}
+      <div class="row">
+        <div class="col-xl-12 m-auto order-xl-1">
+          <div class="card bg-secondary shadow">
+            <div class="card-header bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">My account</h3>
+                </div>
+                <div class="col-4 text-right">
+                  <a href="/logout-user" class="btn btn-sm btn-primary">Logout</a>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <form>
+                <h6 class="heading-small text-muted mb-4">User information</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-username">Name</label>
+                        <input type="text" id="input-username" class="form-control form-control-alternative"  placeholder="Username" value="{{userDetails.name}}" disabled>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-email">Email address</label>
+                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="jesse@example.com" value="{{userDetails.email}}" disabled>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-first-name">Contact Number</label>
+                        <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="First name" value="{{userDetails.contact}}" disabled>
+                      </div>
+                    </div>
+                    {{!-- <div class="col-lg-6">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-last-name">Last name</label>
+                        <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Last name" value="Jesse">
+                      </div>
+                    </div> --}}
+                  </div>
+                </div>
+                <hr class="my-4">
+                <!-- Address -->
+
+                {{#if userDetails.address}}
+                <h6 class="heading-small text-muted m-4">Contact information</h6>
+                {{#each userDetails.address}}
+                <div class="pl-lg-4 border p-3 m-3">
+                  <div class="row">
+                    <div class="col-md-12 col-lg-6">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-address">Address</label>
+                        <input class="form-control form-control-alternative" placeholder="Home Address" value='{{this.address}}' type="text" disabled>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-city">City</label>
+                        <input type="text" class="form-control form-control-alternative" placeholder="City" value="{{this.city}}" disabled>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-country">State</label>
+                        <input type="text" class="form-control form-control-alternative" placeholder="Country" value="{{this.state}}" disabled>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-country">Country</label>
+                        <input type="text"  class="form-control form-control-alternative" placeholder="Country" value="{{this.country}}" disabled>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-country">Postal code</label>
+                        <input type="number" class="form-control form-control-alternative" placeholder="Postal code" value="{{this.pincode}}" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {{/each}}
+                {{else}}
+                <h6 class="heading-small text-muted p-3">Contact information</h6>
+                <div class="pl-lg-4 ">
+                  <label class="form-control-label" for="input-address"> Not updated!</label>
+                </div>
+                <hr>
+
+                {{/if}}
+                <h6 class="heading-small text-muted m-4"><u>Update Contact information</u></h6>
+                <div class="pl-lg-4 border p-4">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group focused mt-3">
+                        <label class="form-control-label" for="input-address">Address</label>
+                        <input id="input-address" name="address" class="form-control form-control-alternative" placeholder="Home Address" value="Padinjare Makkiyil Vandanam" type="text">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-city">City</label>
+                        <input type="text" id="input-city" name="city" class="form-control form-control-alternative" placeholder="City" value="Alappuzha">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-country">State</label>
+                        <input type="text" id="input-state" name="state" class="form-control form-control-alternative" placeholder="Country" value="Kerala">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-country">Country</label>
+                        <input type="text" id="input-country" name="country" class="form-control form-control-alternative" placeholder="Country" value="India">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-country">Postal code</label>
+                        <input type="number" id="input-postal-code" name="pincode" class="form-control form-control-alternative" placeholder="Postal code" value="688005">
+                      </div>
+                    </div>
+                    <div class="col-8 text-right mt-lg-5 mb-md-4">
+                      <button type="button" class="btn btn-sm btn-primary float-right col-6 " onclick="updateAddress('{{userDetails._id}}')">Update Address</button>
+                    </div>
+                    <div class="ml-5 mb-2">
+                      <span style="color: red; font-weight: bold;" id="erorMessage"></span>
+                    </div>
+                  </div>
+
+                </div>
+                <hr class="my-4">
+                <!-- Description -->
+                <h6 class="heading-small text-muted mb-4">Orders</h6>
+                <hr>
+                <div>
+                  <table id="myTable" class="table table table-striped table-bordered text-center " >
+                    <thead>
+                        <tr>
+                            <th scope="col">Order_Date</th>
+                            <th scope="col">Product Name</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Billing Address</th>
+                            <th scope="col">Payment Mode</th>
+                            <th scope="col">Status</th>
+                            <th>Change Status</th>
+
+                        </tr>
+                  </thead>
+                    <tbody>
+                        {{#each orders}}
+                            {{!-- {{#each this.details}} --}}
+                              {{#each this.productDetails}}
+                                <tr>
+                                  {{!-- <td><h2>{{@index}}</td> --}}
+                                  <td>{{../this.date}}</td>
+                                  <td>{{this.name}}</td>
+                                  <td>{{this.price}}</td>
+                                  <td>{{this.quantity}}</td>
+                                  <td>
+                                    {{../this.addressDetails.address}}
+                                    {{../this.addressDetails.city}}
+                                    {{../this.addressDetails.state}}
+                                    {{../this.addressDetails.country}}
+                                    {{../this.addressDetails.pincode}}
+                                    <br>
+                                    {{../this.addressDetails.contact}}
+                                  </td>
+                                  <td>{{../this.paymentMode}}
+                                      {{!-- <h2>{{math this.price "+" 4}}</h2> --}}
+                                  </td>
+                                  <td class="text-center">
+                                    {{#if this.status}}
+                                    {{this.status}}
+                                    {{else}}
+                                    Canceled
+                                    {{/if}}
+                                  </td>
+                                  {{#if this.status}}
+                                  <td>
+                                    <span id="cancel-{{../this._id}},{{this._id}}">
+                                    <button class="btn btn-danger" onclick="ChangeOrderStatus('{{../this.userId}}','{{../this._id}}','{{this._id}}')">Cancel Order</button>
+                                    </span>
+                                  </td>
+                                  {{else}}
+                                  <td>
+                                    Canceled
+                                  </td>
+                                  {{/if}}
+                                </tr>
+                                {{/each}}
+                        {{/each}}
+                    </tbody>  
+                </table>
+              </div>
+
+              </form>
+            </div>
+            <div class="card-body">
+              <form>
+                <hr>
+                <h6 class="heading-small text-muted mb-4">Change Password</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group focused">
+                        <label class="form-control-label" for="input-password">password</label>
+                        <input type="password" id="input-password" class="form-control form-control-alternative"  placeholder="password" >
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" class="form-control form-control-alternative" placeholder="Confirm Password" >
+                      </div>
+                      <div class="col-8 text-right mt-lg-5 mb-md-4">
+                      <button type="button" class="btn btn-sm btn-primary float-right col-6 " onclick="updatePasssword()">Change Password</button>
+                    </div>
+                    <div class="ml-5 mb-2">
+                      <span style="color: red; font-weight: bold;" id="erorMessage2"></span>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  function updateAddress(userId)
+  {
+    address=document.getElementById('input-address').value
+    city=document.getElementById('input-city').value
+    state=document.getElementById('input-state').value
+    country=document.getElementById('input-country').value
+    pincode=document.getElementById('input-postal-code').value
+    {{!-- window.alert(address+" "+city+" "+state+" "+country+" "+pincode) --}}
+    if((address=="")||(city=="")||(state=="")||(country=="")||(pincode==""))
+    {
+      window.alert("Enter Address details Properly")
+    }
+    else{
+      $.ajax({
+        url:'/update-address',
+        data: {
+          userId:userId,
+          address:address,
+          city:city,
+          state:state,
+          country:country,
+          pincode:pincode
+        },
+        method:'post',
+        success:(response)=>{
+          if(response.updateAddress){
+            alert("Address Updated Successfully!")
+            location.reload()
+          }
+          else{
+            alert("Address NOT Updated!")
+            document.getElementById('erorMessage').innerHTML='HI'
+          }
+        }
+      })
+    }
+  }
+  function changeStatus(UserId,orderIndex,productIndex){
+    var selectBox = document.getElementById("statusBox");
+    var selectedValue = document.getElementById("select-"+orderIndex+","+productIndex).value;
+    //alert(selectedValue+" - "+UserId+" - "+orderIndex+" - "+productIndex);
+
+    $.ajax({
+        url:'/order-update?userId='+UserId+'&orderIndex='+orderIndex+'&productIndex='+productIndex+'&status='+selectedValue,
+        method:'get',
+        success:(response)=>{
+            if(response.status){        
+                document.getElementById("status-"+orderIndex+","+productIndex).innerHTML=selectedValue
+
+            }
+            else{
+                document.getElementById("cancel-"+orderIndex+","+productIndex).innerHTML="Canceled"
+                document.getElementById("status-"+orderIndex+","+productIndex).innerHTML="Canceled"
+            }
+        }
+    })
+    
+}
+function updatePasssword(){
+  confPass=document.getElementById('input-password').value
+  password=document.getElementById('confirm-password').value
+
+
+  if((password)&&(confPass)&&(password==confPass)){
+    $.ajax({
+      url:'/update-password',
+      data:{
+        password:password
+        },
+      method:'post',
+      success:(response)=>{
+        if(response.status){
+          document.getElementById('erorMessage2').innerHTML="Password Updated"
+          alert("Password updated, Kindly login again to use....")
+          window.location.href = '/logout-user'
+
+        }
+      }
+    })
+  }
+  else{
+    alert("x")
+  }
+  
+}
+</script>
+<script>
+  $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+</script>
+<script>
+
+</script>
+
+<script>
+  function ChangeOrderStatus(  userId, orderId, productId){
+    selectedValue='Cancel'
+    alert(orderId)
+    alert(productId)
+    alert(selectedValue)
+    alert(userId)
+  }
+   $.ajax({
+                url: '/order-update?orderId=' + orderId + '&productId=' + productId + '&userId=' + userId +'&status='+selectedValue,
+                method: 'get',
+                success: (response) => {
+                    if (response.status) {
+                        //alert(selectedValue)
+                        let SelectId = orderId + "," + productId
+                        document.getElementById("status-" + orderId + "," + productId).innerHTML = selectedValue
+
+                    }
+                    else {
+                        //alert("Not Success")
+                        document.getElementById("cancel-" + orderId + "," + productId).innerHTML = "Canceled"
+                        document.getElementById("status-" + orderId + "," + productId).innerHTM = "Canceled"
+                    }
+                }
+            })
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+  
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script
