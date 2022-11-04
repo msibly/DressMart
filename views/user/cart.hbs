@@ -3,7 +3,7 @@
   <h2 class="text-center fw-bold m-2 p-2">Cart is Empty! </h2>
 </div>
 {{else}}
-<div class="container">
+{{!-- <div class="container">
   <h2 class="text-center fw-bold text-decoration-underline m-2 p-2"><u>Cart Items</u></h2>
   <table class="table p-2">
     <thead>
@@ -38,13 +38,118 @@
 
   <br>
   <h3 style="float: right;">Total Cost: <span id="total">{{total}}</span></h3><br><br>
-  <p style="float: right;">You have got additional off from total Amount of Rs. <span id="grandTotal"><strong>{{grandTotal}} </strong></span></p>
+  <p style="float: right;">You have got additional off from total Amount of Rs. <span
+      id="grandTotal"><strong>{{grandTotal}} </strong></span></p>
   <br>
   <br>
   <a href="/place-order" class="float-right btn btn-success">Place Order</a>
+  <br>
+  <br>
 
-</div>
+</div> --}}
 
+
+
+
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb__text">
+          <h4>Shopping Cart</h4>
+          <div class="breadcrumb__links">
+            <a href="/">Home</a>
+            <a href="/shop?page=1">Shop</a>
+            <span>Shopping Cart</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Shopping Cart Section Begin -->
+<section class="shopping-cart spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="shopping__cart__table">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each products}}
+              <tr>
+                <td class="product__cart__item">
+                  <div class="product__cart__item__pic">
+                    <img src="/product-images/{{this.products._id}}.jpg" alt="product Img" style="width:90px ;">
+                  </div>
+                  <div class="product__cart__item__text">
+                    <h6>{{this.products.Name}}</h6>
+                    <p>{{this.products.Description}}</p>
+                    <del><h6>&#8377; {{this.products.Price}}</h6></del>
+                    <h5>&#8377; {{this.products.finalPrice}}</h5>
+                  </div>
+                </td>
+                <td class="quantity__item">
+                  <div class="quantity">
+                    <div class="pro-qty-2">
+                      <span class="fa fa-angle-left dec qtybtn" onclick="changeQuantity('{{this._id}}','{{this.products._id}}','{{../user}}',-1,{{this.products.finalPrice}})"></span>
+                      <input type="text" id="{{this.products._id}}" value='{{this.quantity}}' readonly>
+                      <span class="fa fa-angle-right inc qtybtn" onclick="changeQuantity('{{this._id}}','{{this.products._id}}','{{../user}}',1,{{this.products.finalPrice}})"></span>
+                    </div>
+                  </div>
+                </td>
+                <td class="cart__price">&#8377; <span id="quantityWiseTotal-{{this.products._id}}">{{math this.products.finalPrice '*' this.quantity}}</span></td>
+                <td class="cart__close"><i class="fa fa-close" onclick="removeProduct('{{this._id}}','{{this.products._id}}','{{../user}}')"></i></td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="continue__btn">
+              <a href="/shop?page=1">Continue Shopping</a>
+            </div>
+          </div>
+          {{!-- <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="continue__btn update__btn">
+              <a href="#"><i class="fa fa-spinner"></i> Update cart</a>
+            </div>
+          </div> --}}
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="cart__discount">
+          <h6>Discount codes</h6>
+          <form action="#">
+            <input type="text" placeholder="Coupon code">
+            <button type="submit">Apply</button>
+          </form>
+        </div>
+        <div class="cart__total">
+          <h6>Cart total</h6>
+          <ul>
+            <li>Subtotal <span id="grandTotal">&#8377; {{grandTotal}}</span></li>
+            <li>Total <span id="total">&#8377; {{total}}</span></li>
+          </ul>
+          <a href="/place-order" class="primary-btn">Proceed to checkout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Shopping Cart Section End -->
 {{/unless}}
 
 
@@ -63,11 +168,11 @@
 
 
 
-
 <script>
-  function changeQuantity(cartId, prodId, user, count) {
+  function changeQuantity(cartId, prodId, user, count,amount) {
     console.log("UserId" + user)
-    let quantity = parseInt(document.getElementById(prodId).innerHTML)
+    let quantity = parseInt(document.getElementById(prodId).value)
+
     count = parseInt(count)
     $.ajax({
       url: '/change-product-quantity',
@@ -87,17 +192,40 @@
         else {
           if (response.removeProduct) {
             alert("product Removed From cart")
-            document.getElementById('total').innerHTML = response.total
-            document.getElementById('grandTotal').innerHTML = response.grandTotal
+            {{!-- document.getElementById('total').innerHTML = response.total
+            document.getElementById('grandTotal').innerHTML = response.grandTotal --}}
             location.reload()
           } else if (response.update) {
-
-            document.getElementById(prodId).innerHTML = quantity + count
-            document.getElementById('total').innerHTML = response.total
-            document.getElementById('grandTotal').innerHTML = response.grandTotal
+            {{!-- alert('update') --}}
+            document.getElementById(prodId).value = quantity + count
+            document.getElementById('total').innerHTML ='&#8377; '+ response.total
+            document.getElementById('quantityWiseTotal-'+prodId).innerHTML = (quantity + count) *amount;
+            document.getElementById('grandTotal').innerHTML ='&#8377; '+ response.grandTotal
 
           }
+          else if(response.maximumCount){
+            alert("maximum product count Reached")
+          }
         }
+      }
+    })
+  }
+</script>
+<script>
+  function removeProduct(cartId, prodId, user){
+    //alert(cartId+" " +prodId +" " + user)
+    $.ajax({
+      url:'/removeSingleartProduct?userId='+user+'&cartId='+cartId+'&prodId='+prodId,
+      method:'post',
+      success:(response)=>{
+        if(response.status){
+          alert("product removed Successfully")
+          window.location.reload('/cart')
+        }
+        else{
+          alert("Not done")
+        }
+
       }
     })
   }

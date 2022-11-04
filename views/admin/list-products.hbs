@@ -5,7 +5,7 @@
     <div class="row d-flex justify-content-center">
         <div class="m-5" style="background: #fff;">
             <h2 class="text-center fw-bold text-decoration-underline">Products</h2>
-            <table class="table table table-striped table-bordered text-center" id="example">
+            <table class="table align-middle mb-3 bg-white" id="example">
                 <thead>
                     <tr>
                         <th width="8%" class="text-center">Sl No</th>
@@ -23,7 +23,7 @@
                 <tbody>
                     {{#each products}}
                     <tr>
-                        <td>{{math @index '+' 1}}</td>
+                        <td>{{math (math (math (math ../page '-' 1) '*' 10) '+' @index) '+' 1}}</td>
                         <td>{{this.Name}}</td>
                         <td>{{this.Category}}</td>
                         <td>{{this.Price}}</td>
@@ -43,6 +43,18 @@
                     {{/each}}
                 </tbody>
             </table>
+            
+        </div>
+        <div class="col-sm-3 col-lg-4 mb-5 ml-auto">
+            <p>Showing Page {{page}} of {{totalPages}}</p>
+            
+
+            <a href="/list-Products?page=1" >| Home | </a>
+            <a href="/list-Products?page={{math page '-' 1}}" {{#if (stringCompare page 1)}}style="pointer-events: none;"{{/if}} >Previous | </a>
+            <a href="#" >{{page}} | </a>
+            <a href="/list-Products?page={{math page '+' 1}}" {{#if (stringCompare page totalPages)}}style="pointer-events: none;"{{/if}}>Next | </a>
+            <a href="/list-Products?page={{totalPages}}" >Last | </a>
+            
         </div>
 
     </div>

@@ -40,6 +40,7 @@
         <table class="table table table-striped table-bordered" id="example">
             <thead>
                 <tr>
+                    <th>sl no</th>
                     <th scope="col">Category Name</th>
                     <th scope="col">Description</th>
                     <th>Offer Price</th>
@@ -50,6 +51,7 @@
             <tbody>
                 {{#each catCollect}}   
                 <tr>
+                    <td>{{math @index '+' 1}}</td>
                     <td>{{this.Name}}</td>    
                     <td>{{this.Description}}</td>
                     <td>{{this.offer}}</td>
@@ -71,7 +73,9 @@
         src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#example').DataTable();
+           $('#example').dataTable({
+            "order": []
+        });
         });
     </script>
     <script>

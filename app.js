@@ -46,6 +46,56 @@ helpers:{
     else{
       return false
     }
+  },
+  compare:function(left,operator,right){
+    switch (operator) {
+      case '<': 
+        if(left<right)
+        {
+          return true
+        }
+      break;
+      case '>': 
+        if(left>right)
+        {
+          return true
+        }
+      break;
+      case '==': 
+      if(left>right)
+      {
+        return true
+      }
+      break; 
+      case '!=': 
+      if(left>right)
+      {
+        return true
+      }
+      break; 
+      default:
+        return true
+      break;
+    }
+  },
+  checkStatus:function(value){
+    switch (value) {
+      case 'placed':
+        return 25;
+        break;
+      case 'Packed':
+        return 50;
+        break;
+      case 'Shipped':
+        return 75;
+        break;
+      case 'Delivered':
+        return 100;
+        break;
+      default:
+        return 25;
+        break;
+    }
   }
 }}))
 

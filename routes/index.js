@@ -1,22 +1,22 @@
-
-
 //import { fetch } from "node-fetch";
-require('dotenv').config();
-var express = require('express');
-const fetch = require('node-fetch')
-const { route, response } = require('../app');
+require("dotenv").config();
+var express = require("express");
+const fetch = require("node-fetch");
+//const { route, response } = require("../app");
 var router = express.Router();
-var userHelpers = require('../helpers/user-helpers');
-var productHelpers = require('../helpers/product-helpers');
-const { Db, ObjectId } = require('mongodb');
-const accountSid = process.env.accountSid
-const authToken = process.env.authToken
-const client = require('twilio')(accountSid, authToken);
+var userHelpers = require("../helpers/user-helpers");
+var productHelpers = require("../helpers/product-helpers");
+const { Db, ObjectId } = require("mongodb");
+const accountSid = process.env.accountSid;
+const authToken = process.env.authToken;
+const serviceId=process.env.serviceId
+const client = require("twilio")(accountSid, authToken);
 
 let orderArray;
 //import fetch from 'node-fetch';
 
-var paypal = require('paypal-rest-sdk');
+var paypal = require("paypal-rest-sdk");
+const { response } = require("express");
 
 // paypal.configure({
 //     'mode': 'sandbox', //sandbox or live
@@ -26,643 +26,690 @@ var paypal = require('paypal-rest-sdk');
 
 // const CLIENT_ID='AWNcracQtclmKNKDjTJmizg2RBgA0ofqGlq9kLRGh9ewgPPE5n-E-ZDN8WotcSminDkg3uaibMzBS7G-'
 // const APP_SECRET='EDRQZzNn2gCH8fsohfYMxd3cP9NCUE-tV8hipENnGRs8my2kprXnrVy9y4xPxrJDLsCfP1HiCW2YWun7'
-// console.log("------client id",CLIENT_ID);
 // const base = "https://api-m.sandbox.paypal.com";
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  res.redirect('/dressMart-home') 
+router.get("/", function (req, res, next) {
+  res.redirect("/dressMart-home");
 });
 
-router.get('/dressMart-home', async function (req, res, next) {
-  productHelpers.getBanners().then( async (banner)=>{
-    console.log(banner);
-
-  if (req.session.user) {
-    //userHelpers.getOrderedProducts(req.session.user._id)
-    let cartCount=await userHelpers.getCartCount(req.session.user._id)
+router.get("/dressMart-home", async function (req, res, next) {
+  productHelpers.getBanners().then(async (banner) => {
+    if (req.session.user) {
+      //userHelpers.getOrderedProducts(req.session.user._id)
+      let cartCount = await userHelpers.getCartCount(req.session.user._id);
       productHelpers.getHomeProducts().then((products) => {
-        console.log("----------user-------------",req.session.user);
-        res.render('index', { pageUser: true, uname, products,cartCount,home: true,banner})
-      })
-  }  
-  else {
-    productHelpers.getHomeProducts().then((products) => {
-      res.render('index', { pageUser: true, uname: false, products,home: true,banner })
-    })
-  }
-})
-})     
+        res.render("index", {
+          pageUser: true,
+          uname,
+          products,
+          cartCount,
+          home: true,
+          banner,
+        });
+      });
+    } else {
+      productHelpers.getHomeProducts().then((products) => {
+        res.render("index", {
+          pageUser: true,
+          uname: false,
+          products,
+          home: true,
+          banner,
+        });
+      });
+    }
+  });
+});
 
-router.get('/login', function (req, res, next) {
-
-  res.setHeader('Cache-Control', 'no-store')
-  var user = req.session.user
+router.get("/login", function (req, res, next) {
+  res.setHeader("Cache-Control", "no-store");
+  var user = req.session.user;
 
   if (user) {
-    res.redirect('/')
+    res.redirect("/");
+  } else {
+    res.render("user/user-login", {
+      title: "User-Login",
+      loginError: req.session.loginErr,
+      pageUser: true,
+    });
+    req.session.loginErr = false;
   }
-  else {
-    res.render('user/user-login', { title: 'User-Login', "loginError": req.session.loginErr, pageUser: true });
-    req.session.loginErr = false
+});
+
+router.get("/register", function (req, res, next) {
+  res.render("user/signup", { pageUser: true });
+});
+
+router.get("/shop/", async function (req, res, next) {
+  let totalProductCount = await productHelpers.getTotalProductCount();
+
+  let pagesCount = Math.ceil(totalProductCount / 8);
+
+  let page = parseInt(req.query.page);
+  if (page < 1) {
+    page = 1;
   }
-})
-
-router.get('/register', function (req, res, next) {
-  res.render('user/signup', { pageUser: true })
-}) 
-
-
-  
-router.get('/shop/',async function (req, res, next) {
-  
-  let totalProductCount=await productHelpers.getTotalProductCount()
-  console.log(totalProductCount);
-  
-  let pagesCount=Math.ceil(totalProductCount/8)
-  console.log(pagesCount);
-
-  let page=parseInt(req.query.page)
-  if(page<1)
-  {
-    page=1
+  if (page > pagesCount) {
+    page = pagesCount;
   }
-  if(page>pagesCount){
-    page=pagesCount
-  }
-  
-  let limitCount=parseInt(page*8)
-  let skipCount=(page*8)-8
 
-  console.log("-limitt-----",limitCount);
+  let limitCount = parseInt(page * 8);
+  let skipCount = page * 8 - 8;
 
   if (req.session.user) {
-    let cartCount=await userHelpers.getCartCount(req.session.user._id)
-    let products=await productHelpers.getAllProductsPageWise(skipCount,limitCount)
-      res.render('user/shop', { pageUser: true, uname, products,cartCount,shop:true,page,pagesCount})
+    let cartCount = await userHelpers.getCartCount(req.session.user._id);
+    let products = await productHelpers.getAllProductsPageWise(
+      skipCount,
+      limitCount
+    );
+    res.render("user/shop", {
+      pageUser: true,
+      uname,
+      products,
+      cartCount,
+      shop: true,
+      page,
+      pagesCount,
+    });
+  } else {
+    productHelpers
+      .getAllProductsPageWise(skipCount, limitCount)
+      .then((products) => {
+        res.render("user/shop", {
+          pageUser: true,
+          uname: false,
+          products,
+          shop: true,
+          page,
+          pagesCount,
+        });
+      });
   }
-  else {
-    productHelpers.getAllProductsPageWise(skipCount,limitCount).then((products) => { 
-      res.render('user/shop', { pageUser: true, uname: false, products,shop:true,page,pagesCount })
-    })
-  }
-})
+});
 
-
-router.get('/contact', function (req, res, next) {
-
+router.get("/contact", function (req, res, next) {
   if (req.session.user) {
-    res.render('user/contact', { pageUser: true, uname })
+    res.render("user/contact", { pageUser: true, uname });
+  } else {
+    res.render("user/contact", { pageUser: true, uname: false });
   }
-  else {
-    res.render('user/contact', { pageUser: true, uname: false })
-  }
-})
+});
 
-router.get('/admin-login', function (req, res, next) {
-  res.render('admin/admin-login')
-})
+router.get("/admin-login", function (req, res, next) {
+  res.render("admin/admin-login");
+});
 
-router.get('/admin-index', function (req, res, next) {
-  res.render('admin/admin-index', { pageAdmin: true, tabIndex:true })
-})
+router.get("/admin-index", function (req, res, next) {
+  res.render("admin/admin-index", { pageAdmin: true, tabIndex: true });
+});
 
-router.post('/logIn', function (req, res, next) {
+router.post("/logIn", function (req, res, next) {
   userHelpers.doLogin(req.body).then((response) => {
-    console.log(response);
     if (response.status) {
       if (response.block) {
-        loginErr = true
-        loginBlock = true
-        req.session.loginErr = "You are blocked, Kindly request admin to unblock"
-        res.redirect('/login')
-      } 
-      else {
-        req.session.loggedIn = true
-        req.session.user = response.user
-        uname = response.user.name
-        res.redirect('/dressMart-home')
+        loginErr = true;
+        loginBlock = true;
+        req.session.loginErr =
+          "You are blocked, Kindly request admin to unblock";
+        res.redirect("/login");
+      } else {
+        req.session.loggedIn = true;
+        req.session.user = response.user;
+        uname = response.user.name;
+        res.redirect("/dressMart-home");
       }
-    }  
-    else {
-      if(response.noUser){
-        loginErr = false
-        req.session.loginErr = "No Userfound, Kindly register to Login"
-        res.redirect('/login')
+    } else {
+      if (response.noUser) {
+        loginErr = false;
+        req.session.loginErr = "No Userfound, Kindly register to Login";
+        res.redirect("/login");
+      } else {
+        loginErr = false;
+        req.session.loginErr = "Invalid Login name or Password";
+        res.redirect("/login");
       }
-      else{
-        loginErr = false
-        req.session.loginErr = "Invalid Login name or Password"
-        res.redirect('/login')
-      }
-    } 
-  })
+    }
+  });
+});
 
-})
-
-router.post('/register', (req, res,) => {
-  userHelpers.verifyUserRegistration(req.body).then((response)=>{
-    if(response.status){
+router.post("/register", (req, res) => {
+  userHelpers.verifyUserRegistration(req.body).then((response) => {
+    if (response.status) {
       // userHelpers.addUsers(req.body).then((response) => {
-      //   console.log(response);
       //   res.redirect('/login');
-        
+
       // })
-      console.log(req.body)
-      req.session.user=req.body
-      mob=req.body.contact
-      console.log("SendMessage");
-        client.verify.v2.services('VA5759a04253cbaeee62fe53efa6b683d8')
-          .verifications
-          .create({ to: `+91${mob}`, channel: 'sms' })
-          .then(verification => {
-            console.log(verification)
-            res.render('user/verifyMobileOTP', { pageUser: true, mob: mob })
-          })
-          .catch(err => {
-            console.log("Error Message");
-            console.log(err)
-            res.redirect('/otp-login')
-          })
-  
-    }
-    else{
-      if(response.findByEmail){
-        res.render('user/signup',{loginError:"Email is already found!"}) 
+
+      req.session.user = req.body;
+      mob = req.body.contact;
+
+      client.verify.v2
+        .services(serviceId)
+        .verifications.create({ to: `+91${mob}`, channel: "sms" })
+        .then((verification) => {
+          res.render("user/verifyMobileOTP", { pageUser: true, mob: mob });
+        })
+        .catch((err) => {
+          res.redirect("/otp-login");
+        });
+    } else {
+      if (response.findByEmail) {
+        res.render("user/signup", { loginError: "Email is already found!" });
       }
-      if(response.findMobile){
-        res.render('user/signup',{loginError:"Mobile No. is already found!"}) 
+      if (response.findMobile) {
+        res.render("user/signup", {
+          loginError: "Mobile No. is already found!",
+        });
       }
     }
-  })
+  });
+});
 
-})
-
-router.post('/verify-Mobile',(req,res)=>{
-  console.log(req.session.user);
-  console.log(req.session.user);
+router.post("/verify-Mobile", (req, res) => {
   if (req.session.user) {
-    mobile = req.session.user.contact
+    mobile = req.session.user.contact;
 
-    otp = req.body.digit1 + req.body.digit2 + req.body.digit3 + req.body.digit4
-    console.log("OTP:  "+ otp + " , Mobile:  " + mobile);
-    console.log("verificationMessage");
+    otp = req.body.digit1 + req.body.digit2 + req.body.digit3 + req.body.digit4;
 
-    client.verify.v2.services('VA5759a04253cbaeee62fe53efa6b683d8')
-    .verificationChecks
-    .create({to: `+91${mobile}`, code: `${otp}`})
-      .then(verification_check => {
-        console.log(verification_check)
+    client.verify.v2
+      .services(serviceId)
+      .verificationChecks.create({ to: `+91${mobile}`, code: `${otp}` })
+      .then((verification_check) => {
         if (verification_check.status) {
-          req.session.user.status = true
-          console.log("Hi--------Login Success-----");
-          
+          req.session.user.status = true;
+
           userHelpers.addUsers(req.session.user).then((response) => {
-            console.log(response);
-            loginErr=true
-            res.render('user/user-login', { pageUser: true, loginErr: "Registration Success, Kindly Login" });
-          })
+            loginErr = true;
+            res.render("user/user-login", {
+              pageUser: true,
+              loginErr: "Registration Success, Kindly Login",
+            });
+          });
+        } else {
         }
-        else{
-
-        }
-
-      })
+      });
+  } else {
+    res.render("user/signup", {
+      pageUser: true,
+      loginErr: "Request Timed out!",
+    });
   }
-  else {
-    res.render('user/signup', { pageUser: true, loginErr: "Request Timed out!" })
-  }
-  
-  
-})
+});
 
-router.post('/admin-login', function (req, res, next) {
+router.post("/admin-login", function (req, res, next) {
   userHelpers.doAdminLogin(req.body).then((response) => {
     if (response.status) {
-        req.session.admin = response.admin
-      res.redirect('/admin-index');
+      req.session.admin = response.admin;
+      res.redirect("/admin-index");
+    } else {
+      req.session.loginErr = "Invalid Login name or Password";
+      res.redirect("/admin-login");
     }
-    else {
-      req.session.loginErr = "Invalid Login name or Password"
-      res.redirect('/admin-login')
-    }
-  })
-})
+  });
+});
 
-router.get('/list-products', function (req, res, next) {
-  productHelpers.getAllProducts().then((products) => {
-    res.render('admin/list-products', { pageAdmin: true, products, tabProducts:true })
-  })
-})
+router.get("/list-products/", async (req, res, next) => {
+  let totalProductCount = await productHelpers.getTotalProductCount();
+  let totalPages = Math.ceil(totalProductCount / 10);
 
-router.get('/users', function (req, res, next) {
+  let page = parseInt(req.query.page);
+  if (page < 1) {
+    page = 1;
+  }
+  if (page > totalPages) {
+    page = totalPages;
+  }
+
+  let limitCount = parseInt(page * 10);
+  let skipCount = page * 10 - 10;
+  let products = await productHelpers.getAllProductsPageWise(
+    skipCount,
+    limitCount
+  );
+  // productHelpers.getAllProducts().then((products) => {
+  res.render("admin/list-products", {
+    pageAdmin: true,
+    products,
+    tabProducts: true,
+    totalPages,
+    page,
+    // });
+  });
+});
+
+router.get("/users", function (req, res, next) {
   userHelpers.getAllUsers().then((users) => {
-    res.render('admin/list-users', { pageAdmin: true, users,tabUsers:true })
-  })
+    res.render("admin/list-users", { pageAdmin: true, users, tabUsers: true });
+  });
+});
+router.get("/admin-logout", function (req, res, next) {
+  req.session.admin = false;
+  res.redirect("/admin-login");
+});
 
-})
-router.get('/admin-logout', function (req, res, next) {
-  req.session.admin = false
-  res.redirect('/admin-login')
-})
+router.get("/add-Products", function (req, res, next) {
+  userHelpers.getCategory().then((catCollect) => {
+    res.render("admin/add-products", {
+      pageAdmin: true,
+      tabProductsAdd: true,
+      tabProducts: true,
+      catCollect,
+    });
+  });
+});
 
-router.get('/add-Products', function (req, res, next) {
-  userHelpers.getCategory().then((catCollect)=>{
-    console.log(catCollect);
-    res.render('admin/add-products', { pageAdmin: true,tabProductsAdd:true, tabProducts:true,catCollect})
-  })
-})
+router.post("/product-add", function (req, res, next) {
+  req.body.Price = parseInt(req.body.Price);
+  req.body.Offer = parseInt(req.body.Offer);
+  req.body.finalPrice = parseInt(req.body.finalPrice);
+  req.body.quantity = parseInt(req.body.quantity);
 
-router.post('/product-add', function (req, res, next) {
-  console.log(req.body);
-  //console.log(req.files.Image)
-  console.log("-----------reqbody----------------",req.body);
-  console.log("--------------------");
-  req.body.Price=parseInt(req.body.Price)
-  
   productHelpers.addProduct(req.body, (id) => {
-    let image = req.files.Image
-    image.mv('./public/product-images/' + id + '.jpg', (err, done) => {
+    let image = req.files.Image;
+    image.mv("./public/product-images/" + id + ".jpg", (err, done) => {
       if (!err) {
-        res.redirect('/add-Products')
+        res.redirect("/add-Products");
       }
-    })  
-  })
-})  
+    });
+  });
+});
 
-router.get('/delete/', (req, res) => {
-  let prodId = req.query.id
-  console.log(prodId);
+router.get("/delete/", (req, res) => {
+  let prodId = req.query.id;
+
   productHelpers.deleteProduct(prodId).then((response) => {
-    res.redirect('/list-products')
-  })
-})
+    res.redirect("/list-products");
+  });
+});
 
-router.get('/edit/', async (req, res) => {
-  let prodId = req.query.id
-  let product = await productHelpers.getProductDetails(prodId)
-  res.render('admin/update-products', {pageAdmin:true,tabProducts:true, product, prodId });
-})
+router.get("/edit/", async (req, res) => {
+  let prodId = req.query.id;
+  let product = await productHelpers.getProductDetails(prodId);
+  res.render("admin/update-products", {
+    pageAdmin: true,
+    tabProducts: true,
+    product,
+    prodId,
+  });
+});
 
-router.post('/product-update/:id', (req, res) => {
+router.post("/product-update/:id", (req, res) => {
   let prodId = req.params.id;
   productHelpers.updateProduct(prodId, req.body).then(() => {
-    res.redirect('/list-products')
-  })
-}) 
-router.get('/orders', async function(req,res,next){
-  let orderList=await productHelpers.getAllOrders()
-  //console.log("---------Orders\n",orderList);
+    res.redirect("/list-products");
+  });
+});
+router.get("/orders", async function (req, res, next) {
+  // if(req.session.admin)
+  // {
+  let orderList = await productHelpers.getAllOrders();
+  // let count=1;
+  // req.session.admin.indexCount=count
+  res.render("admin/orders", { pageAdmin: true, tabOrder: true, orderList });
+  // }
+  // else{
+  //   res.redirect("/admin-login");
+  // }
+});
 
-  res.render('admin/orders',{pageAdmin: true,tabOrder:true,orderList})
-})
+router.get("/category", function (req, res, next) {
+  userHelpers.getCategory().then((catCollect) => {
+    res.render("admin/category", {
+      pageAdmin: true,
+      tabCategory: true,
+      catCollect,
+      add: true,
+    });
+  });
+});
 
-router.get('/category',function(req,res,next){
-  userHelpers.getCategory().then((catCollect)=>{
-  res.render('admin/category',{pageAdmin: true,tabCategory:true,catCollect,add:true})
-  })
-})
+router.get("/unblock", (req, res) => {
+  let blkid = req.query.id;
+  productHelpers.unBlockUser(blkid).then(() => {
+    res.redirect("/users");
+  });
+});
+router.get("/block", (req, res) => {
+  let blkid = req.query.id;
 
+  productHelpers.blockUser(blkid).then(() => {
+    res.redirect("/users");
+  });
+});
 
-router.get('/unblock',(req,res)=>{
-  let blkid=req.query.id
-  productHelpers.unBlockUser(blkid).then(()=>{
-    res.redirect('/users')
-  })
-})
-router.get('/block',(req,res)=>{
-  let blkid=req.query.id
-  console.log("-------------++++++++--------"+blkid);
-  productHelpers.blockUser(blkid).then(()=>{
-    res.redirect('/users')
-  })
-})
+router.get("/product-detail/", async (req, res, next) => {
+  let prodId = req.query.id;
+  let category = req.query.Category;
 
-router.get('/product-detail',async (req,res,next)=>{
-  let prodId=req.query.id 
-  let category=req.query.Category
-  console.log(prodId); 
-  console.log(category);
-  await productHelpers.ProductDetails(prodId).then((ProductInDet)=>{
-    productHelpers.categoryWiseProducts(category).then((products)=>{
-      res.render('user/product-details',{ pageUser: true,ProductInDet,products})  
-    })
-  })
-})
+  await productHelpers.ProductDetails(prodId).then((ProductInDet) => {
+    productHelpers.categoryWiseProducts(category).then(async (products) => {
+      if (req.session.user) {
+        let cartCount = await userHelpers.getCartCount(req.session.user._id);
+        res.render("user/product-details", {
+          pageUser: true,
+          ProductInDet,
+          products,
+          uname,
+          cartCount,
+        });
+      } else {
+        res.render("user/product-details", {
+          pageUser: true,
+          ProductInDet,
+          products,
+        });
+      }
+    });
+  });
+});
 
-router.post('/category-add',(req,res,next)=>{
-  userHelpers.addCategory(req.body).then((response)=>{
-    console.log(response)
-    res.redirect('/category')
-  })
+router.post("/category-add", (req, res, next) => {
+  userHelpers.addCategory(req.body).then((response) => {
+    res.redirect("/category");
+  });
+});
 
-})
+router.get("/delete-category/", (req, res) => {
+  let catId = req.query.id;
+  let name = req.query.name;
 
-router.get('/delete-category/', (req, res) => {
-  let catId = req.query.id
-  let name= req.query.name
-  console.log(catId);
   userHelpers.deleteCategory(catId).then((response) => {
     productHelpers.deleteProductCategory(name).then((response) => {
-    console.log(response)
-    res.redirect('/category')
-    })
- 
-  })
-})
-router.get('/edit-category/', async (req, res) => {
-  let catId = req.query.id
-  let thisCat = await userHelpers.detailCategory(catId)
-  userHelpers.getCategory().then((catCollect)=>{
-    res.render('admin/category', { pageAdmin:true,catId,thisCat,catCollect,tabCategory:true });
-  })
-})
+      res.redirect("/category");
+    });
+  });
+});
+router.get("/edit-category/", async (req, res) => {
+  let catId = req.query.id;
+  let thisCat = await userHelpers.detailCategory(catId);
+  userHelpers.getCategory().then((catCollect) => {
+    res.render("admin/category", {
+      pageAdmin: true,
+      catId,
+      thisCat,
+      catCollect,
+      tabCategory: true,
+    });
+  });
+});
 
-router.post('/category-update/:id',(req,res)=>{
-  let catId=req.params.id
-  userHelpers.updateCategory(catId,req.body).then(()=>{
-    res.redirect('/category')
-  })
-})
+router.post("/category-update/:id", (req, res) => {
+  let catId = req.params.id;
+  userHelpers.updateCategory(catId, req.body).then(() => {
+    res.redirect("/category");
+  });
+});
 
-router.get('/add-to-cart/:id',(req,res,next)=>{
-  console.log("------------------");
-  if(req.session.user)
-  {
-    let prodId=req.params.id
-    let userId=req.session.user._id
-    userHelpers.addToCart(prodId,userId).then(()=>{
-      res.json({status:true})
-    })
-  } 
-  else
-  { 
-    console.log("------------------");
-    res.json({status:false})
+router.get("/add-to-cart/:id", async (req, res, next) => {
+  if (req.session.user) {
+    let prodId = req.params.id;
+    let userId = req.session.user._id;
+    let prodQuantity = await productHelpers.findProductQuantity(prodId);
+    userHelpers.addToCart(prodId, userId, prodQuantity.quantity).then(() => {
+      res.json({ status: true });
+    });
+  } else {
+    res.json({ status: false });
   }
-})
- 
-router.get('/cart', async (req, res, next) => {
+});
+
+router.get("/cart", async (req, res, next) => {
   //res.setHeader('Cache-Control', 'no-store')
-  //console.log("-----------cart----------1");
+
   if (req.session.user) {
     try {
-      //console.log("-----------cart----------try");
-      let cartCount = await userHelpers.getCartCount(req.session.user._id)
-      console.log("-----------cart----------try:",cartCount);
+      let cartCount = await userHelpers.getCartCount(req.session.user._id);
+
       if (cartCount > 0) {
-        
-        let products = await userHelpers.getCartProducts(req.session.user._id) 
-        console.log("-----------cart----------try");
-        console.log("----------//---------",products);
-        //console.log("---------------"+products);
-        let total,grandTotal
-        await userHelpers.getTotalAmount(req.session.user._id).then((response)=>{
-          total=Math.ceil(response.total)
-          grandTotal=Math.ceil(response.grandTotal)
-        })
-        let offerAmount=grandTotal-total
-        console.log("Total Cart Amount: ",total," ",grandTotal);
-        res.render('user/cart', { pageUser: true, uname, products, total, user: req.session.user._id, cartCount,grandTotal,offerAmount })
-      }
-      else {
-        res.render('user/cart', { pageUser: true, uname, cartCount })
+        let products = await userHelpers.getCartProducts(req.session.user._id);
+
+        let total, grandTotal;
+        await userHelpers
+          .getTotalAmount(req.session.user._id)
+          .then((response) => {
+            total = Math.ceil(response.total);
+            grandTotal = Math.ceil(response.grandTotal);
+          });
+        let offerAmount = grandTotal - total;
+
+        res.render("user/cart", {
+          pageUser: true,
+          uname,
+          products,
+          total,
+          user: req.session.user._id,
+          cartCount,
+          grandTotal,
+          offerAmount,
+        });
+      } else {
+        res.render("user/cart", { pageUser: true, uname, cartCount });
       }
     } catch (error) {
-      console.log("-----------cart----------err");
-      res.redirect('/login')
+      res.redirect("/login");
     }
+  } else {
+    res.redirect("/login");
   }
-  else {
-    res.redirect('/login')
-  }
-})
-     
-router.post('/change-product-quantity',async (req,res,next)=>{
-  console.log(req.body);
-    userHelpers.changeProductQuantity(req.body).then(async (response)=>{
-      let cartCount=await userHelpers.getCartCount(req.session.user._id)
-      console.log(cartCount);
-      console.log(req.body.user);
-      if(cartCount>=1){
-        await userHelpers.getTotalAmount(req.body.user).then((response)=>{
-          response.total=Math.ceil(response.total)
-          response.grandTotal=Math.ceil(response.grandTotal)
-          console.log("------response---",response);
-          response.update=true
-          res.json(response)
-        })
+});
+
+router.post("/change-product-quantity", async (req, res, next) => {
+  userHelpers.changeProductQuantity(req.body).then(async (response) => {
+    if (response.maximumCount) {
+      res.json(response);
+    } else {
+      let cartCount = await userHelpers.getCartCount(req.session.user._id);
+
+      if (cartCount >= 1) {
+        await userHelpers.getTotalAmount(req.body.user).then((response) => {
+          response.total = Math.ceil(response.total);
+          response.grandTotal = Math.ceil(response.grandTotal);
+          response.update = true;
+          res.json(response);
+        });
+      } else {
+        response.removeProduct = true;
+        res.json(response);
       }
-      else{
-        response.removeProduct=true
-        res.json(response)
-      }
-    })
-}) 
- 
-router.get('/place-order',async (req,res,next)=>{  
+    }
+  });
+});
+
+router.get("/place-order", async (req, res, next) => {
   //res.setHeader('Cache-Control', 'no-store')
-  if (req.session.user){
-    userHelpers.getUserDetails(req.session.user._id).then(async (response)=>{
-      req.session.user=response.user
-      if(req.session.user.cart)
-      {
-        //console.log("----------req.cart--------",req.session.user.cart,"\n",req.session.user);
-          //console.log(req.session.user._id);
-          let userAddress=await userHelpers.getUserAddress(req.session.user._id)
-          //console.log("User Address\n",userAddress);
-          let total=await userHelpers.getTotalAmount(req.session.user._id)
-          console.log("Total",total); 
-          res.render('user/place-order',{pageUser:true,uname,total,userAddress})
-        
+  if (req.session.user) {
+    userHelpers.getUserDetails(req.session.user._id).then(async (response) => {
+      req.session.user = response.user;
+      if (req.session.user.cart) {
+        let userAddress = await userHelpers.getUserAddress(
+          req.session.user._id
+        );
+
+        let total = await userHelpers.getTotalAmount(req.session.user._id);
+        res.render("user/place-order", {
+          pageUser: true,
+          uname,
+          total,
+          userAddress,
+        });
+      } else {
+        res.redirect("/cart");
       }
-      else{
-        res.redirect('/cart')
-      }
-    })
+    });
+  } else {
+    res.redirect("/login");
   }
-  else{
-    res.redirect('/login') 
-  }
+});
 
-})
+router.get("/otp-login", (req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
 
-router.get('/otp-login',(req,res,next)=>{
-  res.setHeader('Cache-Control', 'no-store')
-  console.log("-----------otp-Login");
-  res.render('user/otp-login',{pageUser:true})
+  res.render("user/otp-login", { pageUser: true });
+});
 
-})
+router.post("/get-otp", (req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
 
-router.post('/get-otp',(req,res,next)=>{
-  res.setHeader('Cache-Control', 'no-store')
-  let mobile=req.body.loginMobile
-  console.log(req.body);
-  userHelpers.findUserMobile(mobile).then((response)=>{
-    if(response.status){
-      if(response.unBlkStatus)
-      {
-        req.session.mobile = mobile
-        console.log("SendMessage");
-        client.verify.v2.services('VA5759a04253cbaeee62fe53efa6b683d8')
-          .verifications
-          .create({ to: `+91${mobile}`, channel: 'sms' })
-          .then(verification => {
-            console.log(verification)
-            res.render('user/otp-enter', { pageUser: true, mob: mobile })
+  let mobile = req.body.loginMobile;
+  userHelpers.findUserMobile(mobile).then((response) => {
+    if (response.status) {
+      if (response.unBlkStatus) {
+        req.session.mobile = mobile;
+        client.verify.v2
+          .services(serviceId)
+          .verifications.create({ to: `+91${mobile}`, channel: "sms" })
+          .then((verification) => {
+            res.render("user/otp-enter", { pageUser: true, mob: mobile });
           })
-          .catch(err => {
-            console.log("Error Message");
-            console.log(err)
-            res.redirect('/otp-login')
-          })
+          .catch((err) => {
+            console.log(err);
+            res.redirect("/otp-login");
+          });
+      } else {
+        res.render("user/otp-login", {
+          loginError: "User is Blocked. Please ask Admin to unblock",
+        });
       }
-      else{
-        res.render('user/otp-login',{loginError:"User is Blocked. Please ask Admin to unblock"}) 
-      }
+    } else {
+      res.render("user/otp-login", {
+        loginError: "User not found. Please Register",
+      });
     }
-    else{
-      res.render('user/otp-login',{loginError:"User not found. Please Register"})
-    }
-  })
- })
+  });
+});
 
+router.post("/otp-submit", (req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
+  mobile = req.session.mobile;
+  otp = req.body.digit1 + req.body.digit2 + req.body.digit3 + req.body.digit4;
 
-router.post('/otp-submit', (req, res, next) => {
-  res.setHeader('Cache-Control', 'no-store')
-  mobile = req.session.mobile
-  otp = req.body.digit1 + req.body.digit2 + req.body.digit3 + req.body.digit4
-  console.log("OTP:  +" + otp + " , Mobile:  " + mobile);
-  console.log("verificationMessage");
   if (mobile) {
-    client.verify.v2.services('VA5759a04253cbaeee62fe53efa6b683d8')
-      .verificationChecks
-      .create({ to: `+91${mobile}`, code: `${otp}` })
-      .then(verification_check => {
-        console.log(verification_check)
+    client.verify.v2
+      .services(serviceId)
+      .verificationChecks.create({ to: `+91${mobile}`, code: `${otp}` })
+      .then((verification_check) => {
         if (verification_check.status) {
-          console.log("--------OTP Verified, Login Success-----");
           userHelpers.getuserDetailByMbile(mobile).then((response) => {
-            console.log(response);
-            req.session.loggedIn = true
-            req.session.user = response.user
-            uname = response.user.name
-            res.redirect('/dressMart-home')
-          })
-        }
-        else {
-          res.redirect('/login')
+            req.session.loggedIn = true;
+            req.session.user = response.user;
+            uname = response.user.name;
+            res.redirect("/dressMart-home");
+          });
+        } else {
+          res.redirect("/login");
         }
       })
-      .catch(err => {
-        console.log("Error Message");
-        console.log(err)
-      })
+      .catch((err) => {});
+  } else {
+    res.render("user/otp-login", {
+      loginError: "Request Timed Out, Try again",
+    });
   }
-  else {
-    res.render('user/otp-login', { loginError: "Request Timed Out, Try again" })
-  }
-})
+});
 
-
-
-router.get('/Account', (req, res, next) => {
+router.get("/Account", (req, res, next) => {
   if (req.session.user) {
     userHelpers.getUserDetails(req.session.user._id).then((response) => {
-      userDetails=[]
-      userDetails= response.user
-      userHelpers.getUserOrders(req.session.user._id).then((orders)=>
-      {
-        console.log("------orders",orders);
-        res.render('user/account', { pageUser: true, uname,userDetails,orders })
-      })
-    })
+      userDetails = [];
+      userDetails = response.user;
+      userHelpers.getUserOrders(req.session.user._id,0,1).then((orders) => {
+        res.render("user/account", {
+          pageUser: true,
+          uname,
+          userDetails,
+          orders,
+        });
+      });
+    });
+  } else {
+    res.redirect("/login");
   }
-  else {
-    res.redirect('/login')
-  }
-})
-  
-router.get('/logout-user',(req,res)=>{
-  res.setHeader('Cache-Control', 'no-store')
-  req.session.user=false
-  res.redirect('/')
-})
+});
 
-router.post('/update-address',(req,res)=>{
-  res.setHeader('Cache-Control', 'no-store')
-  userHelpers.updateAddress(req.body).then((response)=>{
-    res.json(response)
-  })
-  console.log(req.body); 
-})
+router.get("/logout-user", (req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  req.session.user = false;
+  res.redirect("/");
+});
 
-router.get('/product-category-view/',(req,res)=>{
-  let name=req.query.name
-  productHelpers.categoryWiseProducts(name).then((products)=>{
-    userHelpers.getCategory().then((catCollect)=>{
-      res.render('admin/category-wise-products',{pageAdmin:true,tabCategory:true,products,catCollect})
-    })
-  })
-})
+router.post("/update-address", (req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  userHelpers.updateAddress(req.body).then((response) => {
+    res.json(response);
+  });
+});
 
-router.post('/order-complete',async (req,res)=>{
+router.get("/product-category-view/", (req, res) => {
+  let name = req.query.name;
+  productHelpers.categoryWiseProducts(name).then((products) => {
+    userHelpers.getCategory().then((catCollect) => {
+      res.render("admin/category-wise-products", {
+        pageAdmin: true,
+        tabCategory: true,
+        products,
+        catCollect,
+      });
+    });
+  });
+});
+
+router.post("/order-complete", async (req, res) => {
   //res.setHeader('Cache-Control', 'no-store')
-  if(req.session.user){
+  if (req.session.user) {
     let date_ob = new Date();
-    let date=date_ob.getDate()+"-"+(date_ob.getMonth()+1)+"-"+date_ob.getFullYear();
-    let paymentMode=req.body.paymentMethod
-    let totalAmount=parseInt(req.body.totalCost)
-    let addressDetails={
-      address:req.body.address,
-      city:req.body.city,  
-      state:req.body.state,
-      country:req.body.country,
-      pinCode:req.body.pinCode,
-      contact:req.body.contact,
-    }
-    //console.log(addressDetails);
-    //console.log(req.body);
-    let cartOrderList=await userHelpers.getOrderedProducts(req.session.user._id)
-    // console.log("___________");
-    // console.log(cartOrderList)
-    // console.log("\n________________");
-    
-    let orderId=new ObjectId()
+    let date =
+      date_ob.getDate() +
+      "-" +
+      (date_ob.getMonth() + 1) +
+      "-" +
+      date_ob.getFullYear();
+    let paymentMode = req.body.paymentMethod;
+    let totalAmount = parseInt(req.body.totalCost);
+    let addressDetails = {
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      country: req.body.country,
+      pinCode: req.body.pinCode,
+      contact: req.body.contact,
+    };
 
-    let order={
-      _id:orderId,
-      userId:req.session.user._id,
-      date:date,
-      totalAmount:totalAmount,
-      paymentMode:paymentMode,
-      productDetails:cartOrderList,
-      addressDetails:addressDetails
-    }
+    let cartOrderList = await userHelpers.getOrderedProducts(
+      req.session.user._id
+    );
 
-    if(paymentMode=='COD'){
-      await productHelpers.addToOrders(order).then(async (response)=>{
-        if(response){
-          console.log("purchased");  
-          await userHelpers.removeFromCart(req.session.user._id).then((response)=>{
-            if(response){
-              console.log("Removed from Cart, COD Success")
-              res.json({status:true, cod:true})
-            }
-          })
+    let orderId = new ObjectId();
+
+    let order = {
+      _id: orderId,
+      userId: req.session.user._id,
+      date: date,
+      totalAmount: totalAmount,
+      paymentMode: paymentMode,
+      productDetails: cartOrderList,
+      addressDetails: addressDetails,
+    };
+
+    if (paymentMode == "COD") {
+      await productHelpers.addToOrders(order).then(async (response) => {
+        if (response) {
+          await userHelpers
+            .removeFromCart(req.session.user._id)
+            .then((response) => {
+              if (response) {
+                res.json({ status: true, cod: true });
+              }
+            });
         }
-      })
-    }
-    else if(paymentMode=='RazorPay'){
-      req.session.user.purchase=order
-      productHelpers.generateRazorpay(orderId,totalAmount)
-      .then((order)=>{
-        res.json({order,status:true, razorpay:true})  
-      })
-    }
-
-    else if(paymentMode=='PayPal'){
-
+      });
+    } else if (paymentMode == "RazorPay") {
+      req.session.user.purchase = order;
+      productHelpers.generateRazorpay(orderId, totalAmount).then((order) => {
+        res.json({ order, status: true, razorpay: true });
+      });
+    } else if (paymentMode == "PayPal") {
       //   const create_payment_json = {
       //     "intent": "sale",
       //     "payer": {
@@ -692,153 +739,132 @@ router.post('/order-complete',async (req,res)=>{
       // let link;
       // paypal.payment.create(create_payment_json, function (error, payment) {
       //   if (error) {
-      //       console.log(error)
       //       res.json({status:false})
       //   } else {
       //       for(let i = 0;i < payment.links.length;i++){
       //         if(payment.links[i].rel === 'approval_url'){
       //         link=payment.links[i].href
-      //         console.log("link",link,"\n",payment);
-      //         res.json({status:true,paypal:true,link:link}) 
+      //         res.json({status:true,paypal:true,link:link})
       //         }
       //       }
       //   }
       // });
+    } else {
+      res.json({ status: false });
     }
-    else{
-      res.json({status:false})
-    }
+  } else {
+    res.json({ status: false });
   }
-  else{
-    res.json({status:false})
-  }
-})
+});
 
+router.post("/verify-payment", (req, res) => {
+  orderArray = req.session.user.purchase;
+  userId = req.session.user._id;
 
-router.post('/verify-payment',(req,res)=>{
-  orderArray=req.session.user.purchase
-  userId=req.session.user._id
-  console.log("\nUserId\n",userId);
-  productHelpers.verifyPayment(req.body).then(async (response)=>{
-    if(response.status){
-      await productHelpers.addToOrders(orderArray).then(async (response)=>{
-        await userHelpers.removeFromCart(req.session.user._id).then((response)=>{
-          if(response){
-            console.log("Removed from Cart, ONLINE placed");
-            res.json({status:true})
-          }
-        })
-      })
+  productHelpers.verifyPayment(req.body).then(async (response) => {
+    if (response.status) {
+      await productHelpers.addToOrders(orderArray).then(async (response) => {
+        await userHelpers
+          .removeFromCart(req.session.user._id)
+          .then((response) => {
+            if (response) {
+              res.json({ status: true });
+            }
+          });
+      });
+    } else {
+      res.json({ status: false });
     }
-    else{
-      console.log("Not success");
-      res.json({status:false})
-    }
-  })
-})
-router.get('/order-success',  (req,res)=>{ 
-   userHelpers.getUserDetails(req.session.user._id).then((response)=>{
-    req.session.user=response.user
-    res.render('user/order-success')
-  })
+  });
+});
+router.get("/order-success", (req, res) => {
+  userHelpers.getUserDetails(req.session.user._id).then((response) => {
+    req.session.user = response.user;
+    res.render("user/order-success");
+  });
+});
 
-})
+router.get("/banner-management", (req, res) => {
+  productHelpers.getBanners().then((banner) => {
+    res.render("admin/banner-management", {
+      pageAdmin: true,
+      tabBanner: true,
+      banner,
+    });
+  });
+});
 
+router.post("/add-banner", (req, res) => {
+  productHelpers.addBanner(req.body.Name).then((response) => {
+    id = response.id;
 
-router.get('/banner-management', (req,res)=>{
-  productHelpers.getBanners().then((banner)=>{
-    console.log(banner);
-  res.render('admin/banner-management',{pageAdmin:true,tabBanner:true,banner})
-  })
-})
+    let image = req.files.Image;
 
-router.post('/add-banner',(req,res)=>{
-  console.log(req.body);
-  console.log(req.files.Image)
-  
-  productHelpers.addBanner(req.body.Name).then((response)=>{
-    id=response.id
-    console.log(id);
-    
-      let image = req.files.Image
-  
-      image.mv('./public/product-images/' + id + '.jpg', (err, done) => {
-        if (!err) {
-          res.redirect('/banner-management')
-        }
-      })  
-  })
-})
+    image.mv("./public/product-images/" + id + ".jpg", (err, done) => {
+      if (!err) {
+        res.redirect("/banner-management");
+      }
+    });
+  });
+});
 
-router.get('/delete-banner/',(req,res)=>{
-  res.setHeader('Cache-Control', 'no-store')
-  bannerId=req.query.id
-  productHelpers.deleteBanner(bannerId).then((response)=>{
-    res.redirect('/banner-management')
-  })
-})
+router.get("/delete-banner/", (req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  bannerId = req.query.id;
+  productHelpers.deleteBanner(bannerId).then((response) => {
+    res.redirect("/banner-management");
+  });
+});
 
-router.get('/multi-image',(req,res,next)=>{
-  productHelpers.getmult().then((multImages)=>{
-    res.render('admin/multiple-image',{multImages})
-  })
+router.get("/multi-image", (req, res, next) => {
+  productHelpers.getmult().then((multImages) => {
+    res.render("admin/multiple-image", { multImages });
+  });
+});
 
-})
-
-router.post('/multi-image-upload',(req,res)=>{
-
+router.post("/multi-image-upload", (req, res) => {
   //res.setHeader('Cache-Control', 'no-store')
 
-  let name=req.body.Name
-  productHelpers.multiImage(name).then((response)=>{
-    id=response.id
-    let Image1=req.files.Image0
-    let Image2=req.files.Image1
+  let name = req.body.Name;
+  productHelpers.multiImage(name).then((response) => {
+    id = response.id;
+    let Image1 = req.files.Image0;
+    let Image2 = req.files.Image1;
 
-    Image1.mv('./public/product-images/' + id + '-0.jpg') 
-    Image2.mv('./public/product-images/' + id + '-1.jpg', (err, done) => {
-        if (!err) {
-          res.redirect('/multi-image')
-        }
-        else{
-          console.log(err);
-        }
-      })     
-  })       
-})
+    Image1.mv("./public/product-images/" + id + "-0.jpg");
+    Image2.mv("./public/product-images/" + id + "-1.jpg", (err, done) => {
+      if (!err) {
+        res.redirect("/multi-image");
+      } else {
+      }
+    });
+  });
+});
 
-router.get('/order-update/',async (req,res)=>{
+router.get("/order-update/", async (req, res) => {
   //res.setHeader('Cache-Control', 'no-store')
-  console.log(req.query)
-  let orderId=req.query.orderId
-  let productId=req.query.productId
-  let userId=req.query.userId
-  let orderStatus=req.query.status
 
-  if(orderStatus=='Cancel')
-  {  
-    orderStatus=Boolean(false)
+  let orderId = req.query.orderId;
+  let productId = req.query.productId;
+  let userId = req.query.userId;
+  let orderStatus = req.query.status;
+
+  if (orderStatus == "Cancel") {
+    orderStatus = Boolean(false);
   }
-  await productHelpers.changeOrderStatus(userId,orderId,productId,orderStatus).then((response)=>{
-    console.log(response.status+"--status")
-    if(response.status)
-    {
-      res.json({status:true})
-    }
-    else{
-      res.json({status:false})
-    }
-
-  })
-  .catch((error)=>{
-    console.log(error);
-    res.json(error)
-  })
-
-})
-
-
-
+  await productHelpers
+    .changeOrderStatus(userId, orderId, productId, orderStatus)
+    .then((response) => {
+      if (response.status) {
+        res.json({ status: true });
+      } else {
+        res.json({ status: false });
+      }
+    })
+    .catch((error) => {
+      res.json(error);
+    });
+});
 
 // // use the orders api to create an order
 // async function createOrder() {
@@ -866,7 +892,6 @@ router.get('/order-update/',async (req,res)=>{
 //   return data;
 // }
 
-
 // // generate an access token using client id and app secret
 // async function generateAccessToken() {
 
@@ -875,78 +900,107 @@ router.get('/order-update/',async (req,res)=>{
 //   const response = await fetch(`${base}/v1/oauth2/token`, {
 //     method: "post",
 //     body: "grant_type=client_credentials",
-//     headers: {  
-//       Authorization: `Basic ${auth}`,   
+//     headers: {
+//       Authorization: `Basic ${auth}`,
 //     },
 //   });
 //   const data = await response.json();
 //   return data.access_token;
 // }
 
-router.post('/update-password',async (req,res)=>{
-  const bcrypt = require('bcrypt');
-  let password=req.body.password
-  console.log(password);
-  password=await bcrypt.hash(password,10)
-  // console.log("--------pasword-------------",password);
-  userHelpers.updatePassword(req.session.user._id,password).then((response)=>{
-    res.json({status:true})
-  })
-})
+router.post("/update-password", async (req, res) => {
+  const bcrypt = require("bcrypt");
+  let password = req.body.password;
 
+  password = await bcrypt.hash(password, 10);
 
-router.get('/coupon-management',async (req,res)=>{
-  if(req.session.admin){
-  await productHelpers.getAllCoupons().then((couponCollect)=>{
-    console.log(req.session.admin.err);
-    res.render('admin/coupon-management',{pageAdmin:true,tabCoupon:true,couponCollect,err:req.session.admin.err})
-  })
-  }else{
-    res.redirect('/admin-login')
+  userHelpers
+    .updatePassword(req.session.user._id, password)
+    .then((response) => {
+      res.json({ status: true });
+    });
+});
+
+router.get("/coupon-management", async (req, res) => {
+  if (req.session.admin) {
+    await productHelpers.getAllCoupons().then((couponCollect) => {
+      res.render("admin/coupon-management", {
+        pageAdmin: true,
+        tabCoupon: true,
+        couponCollect,
+        err: req.session.admin.err,
+      });
+    });
+  } else {
+    res.redirect("/admin-login");
   }
-
-})
-router.post('/coupon-add',(req,res)=>{
-  productHelpers.addCoupon(req.body).then((response)=>{
-    if(response.status){
-      //console.log("---------re stat",response.status);
-      req.session.admin.err=false
-      res.redirect('/coupon-management')
+});
+router.post("/coupon-add", (req, res) => {
+  productHelpers.addCoupon(req.body).then((response) => {
+    if (response.status) {
+      req.session.admin.err = false;
+      res.redirect("/coupon-management");
+    } else {
+      req.session.admin.err = "Coupon Already Exsist";
+      res.redirect("/coupon-management");
     }
-    else{
-      req.session.admin.err="Coupon Already Exsist"
-      res.redirect('/coupon-management')
-    }
-  })
-})
-router.get('/delete-couon/',(req,res)=>{
-  let id=req.query.id
-  productHelpers.deleteCoupon(id).then((response)=>{
-    res.redirect('/coupon-management')
-  })
-})
+  });
+});
+router.get("/delete-couon/", (req, res) => {
+  let id = req.query.id;
+  productHelpers.deleteCoupon(id).then((response) => {
+    res.redirect("/coupon-management");
+  });
+});
 
-router.post('/verify-coupon',(req,res)=>{
-  console.log(req.body);
-  let couponCode=req.body.couponCode
-  let totalAmount=req.body.totalAmount
-  productHelpers.verifyCoupon(couponCode).then((response)=>{
-    if(response.couponDetails){
-      totalAmount=(parseFloat(totalAmount))-(parseFloat(response.couponDetails.price))
-      res.json({status:true,totalAmount:totalAmount,price:response.couponDetails.price})
+router.post("/verify-coupon", (req, res) => {
+  let couponCode = req.body.couponCode;
+  let totalAmount = req.body.totalAmount;
+  productHelpers.verifyCoupon(couponCode).then((response) => {
+    if (response.couponDetails) {
+      totalAmount =
+        parseFloat(totalAmount) - parseFloat(response.couponDetails.price);
+      res.json({
+        status: true,
+        totalAmount: totalAmount,
+        price: response.couponDetails.price,
+      });
+    } else {
+      res.json({ status: false });
+    }
+  });
+});
+
+router.get("/get-offer-price/", async (req, res) => {
+  await productHelpers.getCategory(req.query.name).then((response) => {
+    res.json({ status: true, offer: response.offer });
+  });
+});
+router.post("/removeSingleartProduct/", async (req, res) => {
+  await productHelpers
+    .removeSingleartProductFromCart(req.query.cartId, req.query.prodId)
+    .then((response) => {
+      res.json({ status: true });
+    });
+});
+router.get('/view-more-orders/',async(req,res)=>{
+  let page=parseInt(req.query.page)
+  if(req.session.user){
+    console.log(req.session.user._id);
+    let totalOrdersCount=await userHelpers.getTotalOrderCount(req.session.user._id)
+    console.log(page,"-------",totalOrdersCount);
+    let skip=(page*1)-1
+    if(page<totalOrdersCount){
+      let order=await userHelpers.getUserOrders(req.session.user._id,skip,1)
+      res.json({order,status:true})
     }
     else{
       res.json({status:false})
     }
-  })
-}) 
-
-router.get('/get-offer-price/', async (req,res)=>{
-  console.log(req.query.name);
-  await productHelpers.getCategory(req.query.name).then((response)=>{
-    res.json({status:true,offer:response.offer})
-  })
+  }else
+  {
+    res.redirect('/login')
+  }
 })
 
 module.exports = router;
-  

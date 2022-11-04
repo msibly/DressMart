@@ -1,6 +1,8 @@
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
 
-{{!-- <body> --}}
+{{!--
+
+<body> --}}
   {{!-- {{#each userDetails}} --}}
   <div class="main-content">
     <div class="container mt-7">
@@ -20,20 +22,22 @@
               </div>
             </div>
             <div class="card-body">
-              <form>
+              {{!-- <form> --}}
                 <h6 class="heading-small text-muted mb-4">User information</h6>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-username">Name</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative"  placeholder="Username" value="{{userDetails.name}}" disabled>
+                        <input type="text" id="input-username" class="form-control form-control-alternative"
+                          placeholder="Username" value="{{userDetails.name}}" disabled>
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-email">Email address</label>
-                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="jesse@example.com" value="{{userDetails.email}}" disabled>
+                        <input type="email" id="input-email" class="form-control form-control-alternative"
+                          placeholder="jesse@example.com" value="{{userDetails.email}}" disabled>
                       </div>
                     </div>
                   </div>
@@ -41,13 +45,15 @@
                     <div class="col-lg-6">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-first-name">Contact Number</label>
-                        <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="First name" value="{{userDetails.contact}}" disabled>
+                        <input type="text" id="input-first-name" class="form-control form-control-alternative"
+                          placeholder="First name" value="{{userDetails.contact}}" disabled>
                       </div>
                     </div>
                     {{!-- <div class="col-lg-6">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-last-name">Last name</label>
-                        <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Last name" value="Jesse">
+                        <input type="text" id="input-last-name" class="form-control form-control-alternative"
+                          placeholder="Last name" value="Jesse">
                       </div>
                     </div> --}}
                   </div>
@@ -63,7 +69,8 @@
                     <div class="col-md-12 col-lg-6">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-address">Address</label>
-                        <input class="form-control form-control-alternative" placeholder="Home Address" value='{{this.address}}' type="text" disabled>
+                        <input class="form-control form-control-alternative" placeholder="Home Address"
+                          value='{{this.address}}' type="text" disabled>
                       </div>
                     </div>
                   </div>
@@ -71,25 +78,29 @@
                     <div class="col-lg-4">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-city">City</label>
-                        <input type="text" class="form-control form-control-alternative" placeholder="City" value="{{this.city}}" disabled>
+                        <input type="text" class="form-control form-control-alternative" placeholder="City"
+                          value="{{this.city}}" disabled>
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-country">State</label>
-                        <input type="text" class="form-control form-control-alternative" placeholder="Country" value="{{this.state}}" disabled>
+                        <input type="text" class="form-control form-control-alternative" placeholder="Country"
+                          value="{{this.state}}" disabled>
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-country">Country</label>
-                        <input type="text"  class="form-control form-control-alternative" placeholder="Country" value="{{this.country}}" disabled>
+                        <input type="text" class="form-control form-control-alternative" placeholder="Country"
+                          value="{{this.country}}" disabled>
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="input-country">Postal code</label>
-                        <input type="number" class="form-control form-control-alternative" placeholder="Postal code" value="{{this.pincode}}" disabled>
+                        <input type="number" class="form-control form-control-alternative" placeholder="Postal code"
+                          value="{{this.pincode}}" disabled>
                       </div>
                     </div>
                   </div>
@@ -109,7 +120,8 @@
                     <div class="col-md-12">
                       <div class="form-group focused mt-3">
                         <label class="form-control-label" for="input-address">Address</label>
-                        <input id="input-address" name="address" class="form-control form-control-alternative" placeholder="Home Address" value="Padinjare Makkiyil Vandanam" type="text">
+                        <input id="input-address" name="address" class="form-control form-control-alternative"
+                          placeholder="Home Address" value="Padinjare Makkiyil Vandanam" type="text">
                       </div>
                     </div>
                   </div>
@@ -117,29 +129,34 @@
                     <div class="col-lg-4">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-city">City</label>
-                        <input type="text" id="input-city" name="city" class="form-control form-control-alternative" placeholder="City" value="Alappuzha">
+                        <input type="text" id="input-city" name="city" class="form-control form-control-alternative"
+                          placeholder="City" value="Alappuzha">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-country">State</label>
-                        <input type="text" id="input-state" name="state" class="form-control form-control-alternative" placeholder="Country" value="Kerala">
+                        <input type="text" id="input-state" name="state" class="form-control form-control-alternative"
+                          placeholder="Country" value="Kerala">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-country">Country</label>
-                        <input type="text" id="input-country" name="country" class="form-control form-control-alternative" placeholder="Country" value="India">
+                        <input type="text" id="input-country" name="country"
+                          class="form-control form-control-alternative" placeholder="Country" value="India">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="input-country">Postal code</label>
-                        <input type="number" id="input-postal-code" name="pincode" class="form-control form-control-alternative" placeholder="Postal code" value="688005">
+                        <input type="number" id="input-postal-code" name="pincode"
+                          class="form-control form-control-alternative" placeholder="Postal code" value="688005">
                       </div>
                     </div>
                     <div class="col-8 text-right mt-lg-5 mb-md-4">
-                      <button type="button" class="btn btn-sm btn-primary float-right col-6 " onclick="updateAddress('{{userDetails._id}}')">Update Address</button>
+                      <button type="button" class="btn btn-sm btn-primary float-right col-6 "
+                        onclick="updateAddress('{{userDetails._id}}')">Update Address</button>
                     </div>
                     <div class="ml-5 mb-2">
                       <span style="color: red; font-weight: bold;" id="erorMessage"></span>
@@ -151,69 +168,171 @@
                 <!-- Description -->
                 <h6 class="heading-small text-muted mb-4">Orders</h6>
                 <hr>
-                <div>
-                  <table id="myTable" class="table table table-striped table-bordered text-center " >
+
+                  <!--         <table id="myTable" class="table table table-striped table-bordered text-center ">
                     <thead>
-                        <tr>
-                            <th scope="col">Order_Date</th>
-                            <th scope="col">Product Name</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Billing Address</th>
-                            <th scope="col">Payment Mode</th>
-                            <th scope="col">Status</th>
-                            <th>Change Status</th>
+                      <tr>
+                        <th scope="col">Order_Date</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Billing Address</th>
+                        <th scope="col">Payment Mode</th>
+                        <th scope="col">Status</th>
+                        <th>Change Status</th>
 
-                        </tr>
-                  </thead>
+                      </tr>
+                    </thead>
                     <tbody>
+                      {{#each orders}}
+                      {{!-- {{#each this.details}} --}}
+                      {{#each this.productDetails}}
+                      <tr>
+                        {{!-- <td>
+                          <h2>{{@index}}
+                        </td> --}}
+                        <td>{{../this.date}}</td>
+                        <td>{{this.name}}</td>
+                        <td>{{this.price}}</td>
+                        <td>{{this.quantity}}</td>
+                        <td>
+                          {{../this.addressDetails.address}}
+                          {{../this.addressDetails.city}}
+                          {{../this.addressDetails.state}}
+                          {{../this.addressDetails.country}}
+                          {{../this.addressDetails.pincode}}
+                          <br>
+                          {{../this.addressDetails.contact}}
+                        </td>
+                        <td>{{../this.paymentMode}}
+                          {{!-- <h2>{{math this.price "+" 4}}</h2> --}}
+                        </td>
+                        <td class="text-center">
+                          {{#if this.status}}
+                          {{this.status}}
+                          {{else}}
+                          Canceled
+                          {{/if}}
+                        </td>
+                        {{#if this.status}}
+                        <td>
+                          <span id="cancel-{{../this._id}},{{this._id}}">
+                            <button class="btn btn-danger"
+                              onclick="ChangeOrderStatus('{{../this.userId}}','{{../this._id}}','{{this._id}}')">Cancel
+                              Order</button>
+                          </span>
+                        </td>
+                        {{else}}
+                        <td>
+                          Canceled
+                        </td>
+                        {{/if}}
+                      </tr>
+                      {{/each}}
+                      {{/each}}
+                    </tbody>
+                  </table>
+                  - - - - - - - - - - - - - - - - - - - -
+          -->
+                <div class="text-center">
+                  <div class="shopping__cart__table">
+                    <table>
+                      <thead>
+                      </thead>
+                      <tbody>
                         {{#each orders}}
-                            {{!-- {{#each this.details}} --}}
-                              {{#each this.productDetails}}
-                                <tr>
-                                  {{!-- <td><h2>{{@index}}</td> --}}
-                                  <td>{{../this.date}}</td>
-                                  <td>{{this.name}}</td>
-                                  <td>{{this.price}}</td>
-                                  <td>{{this.quantity}}</td>
-                                  <td>
-                                    {{../this.addressDetails.address}}
-                                    {{../this.addressDetails.city}}
-                                    {{../this.addressDetails.state}}
-                                    {{../this.addressDetails.country}}
-                                    {{../this.addressDetails.pincode}}
-                                    <br>
-                                    {{../this.addressDetails.contact}}
-                                  </td>
-                                  <td>{{../this.paymentMode}}
-                                      {{!-- <h2>{{math this.price "+" 4}}</h2> --}}
-                                  </td>
-                                  <td class="text-center">
-                                    {{#if this.status}}
-                                    {{this.status}}
-                                    {{else}}
-                                    Canceled
-                                    {{/if}}
-                                  </td>
-                                  {{#if this.status}}
-                                  <td>
-                                    <span id="cancel-{{../this._id}},{{this._id}}">
-                                    <button class="btn btn-danger" onclick="ChangeOrderStatus('{{../this.userId}}','{{../this._id}}','{{this._id}}')">Cancel Order</button>
-                                    </span>
-                                  </td>
-                                  {{else}}
-                                  <td>
-                                    Canceled
-                                  </td>
-                                  {{/if}}
-                                </tr>
-                                {{/each}}
-                        {{/each}}
-                    </tbody>  
-                </table>
-              </div>
+                        {{#each this.productDetails}}
+                        <tr>
+                          <td class="product__cart__item">
+                            <div class="product__cart__item__pic mb-2">
+                              <a href="/product-detail?id={{this._id}}">
+                                <img src="/product-images/{{this._id}}.jpg" alt="product Img" style="width:90px ;">
+                              </a>
+                            </div>
+                            <div class="product__cart__item__text">
+                              <h6>{{this.name}}</h6>
+                              <p>{{this.quantity}} Nos.</p>
+                              <h5>&#8377; {{this.price}}</h5>
+                            </div>
+                            {{#if this.status}}
+                            {{#if (stringCompare this.status 'Delivered') }}
+                            <div class="progress mt-5" style="height: 20px;">
+                              <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100"
+                                aria-valuemin="0" aria-valuemax="100">
+                                {{this.status}}
+                              </div>
+                            </div>
+                            {{else}}
+                            <div class="progress mt-5" style="height: 20px;">
+                              <div class="progress-bar" role="progressbar" style="width: {{checkStatus this.status}}%;" aria-valuenow="{{checkStatus this.status}}"
+                                aria-valuemin="0" aria-valuemax="100">
+                                {{this.status}}
+                              </div>
+                            </div>
+                            {{/if}}
+                            {{else}}
+                            <div class="progress mt-5" style="height: 20px;">
+                              <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;" aria-valuenow="100"
+                                aria-valuemin="0" aria-valuemax="100">
+                                Order Canceled
+                              </div>
+                            </div>
+                            {{/if}}
+                          </td>
+                          <td class="product__cart__item">
+                            {{!-- <div class="quantity">
+                              <div class="pro-qty-2"> --}}
+                                <h6>{{../this.paymentMode}}</h6>
+                                <p>
+                                  {{../this.addressDetails.address}},
+                                  {{../this.addressDetails.city}},<br>
+                                  {{../this.addressDetails.state}},
+                                  {{../this.addressDetails.country}},
+                                  {{../this.addressDetails.pinCode}}
+                                  <br>
+                                  contact: {{../this.addressDetails.contact}}
+                                </p>
+                                {{!--
+                              </div>
+                            </div> --}}
+                          </td>
+                          {{!-- <td class="cart__price">{{../this.paymentMode}}</td> --}}
+                          <td class="cart__close">
+                            <p>
+                              Placed on {{../this.date}} <br>
+                              Total Amount - {{math this.price '*' this.quantity}}
+                            </p>
+                            {{#if this.status}}
+                            <span id="status-" + {{../this._id}} + "," + {{this._id}}>
 
-              </form>
+                            <button type="button" class="btn btn-outline-danger btn-rounded rounded-pill"
+                              onclick="ChangeOrderStatus('{{../this.userId}}','{{../this._id}}','{{this._id}}')">Cancel
+                              Order</button>
+                              </span>
+                            {{!-- <button>
+                              <i class="fa fa-close"
+                                onclick="removeProduct('{{this._id}}','{{this.products._id}}','{{../user}}')"> Cancel
+                                Order
+                              </i>
+                            </button> --}}
+                            {{/if}}
+                          </td>
+                        </tr>
+                        {{/each}}
+                        {{/each}}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="text-center" id="viewMoreButton">
+                    <button type="button" class="btn btn-outline-success btn-rounded rounded-pill" onclick="viewMore(2)">
+                      View More
+                    </button>
+                  </div>
+
+                </div>
+
+                {{!--
+              </form> --}}
             </div>
             <div class="card-body">
               <form>
@@ -224,20 +343,23 @@
                     <div class="col-lg-6">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-password">password</label>
-                        <input type="password" id="input-password" class="form-control form-control-alternative"  placeholder="password" >
+                        <input type="password" id="input-password" class="form-control form-control-alternative"
+                          placeholder="password">
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="confirm-password">Confirm Password</label>
-                        <input type="password" id="confirm-password" class="form-control form-control-alternative" placeholder="Confirm Password" >
+                        <input type="password" id="confirm-password" class="form-control form-control-alternative"
+                          placeholder="Confirm Password">
                       </div>
                       <div class="col-8 text-right mt-lg-5 mb-md-4">
-                      <button type="button" class="btn btn-sm btn-primary float-right col-6 " onclick="updatePasssword()">Change Password</button>
-                    </div>
-                    <div class="ml-5 mb-2">
-                      <span style="color: red; font-weight: bold;" id="erorMessage2"></span>
-                    </div>
+                        <button type="button" class="btn btn-sm btn-primary float-right col-6 "
+                          onclick="updatePasssword()">Change Password</button>
+                      </div>
+                      <div class="ml-5 mb-2">
+                        <span style="color: red; font-weight: bold;" id="erorMessage2"></span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -249,130 +371,278 @@
     </div>
   </div>
 
-<script>
-  function updateAddress(userId)
-  {
-    address=document.getElementById('input-address').value
-    city=document.getElementById('input-city').value
-    state=document.getElementById('input-state').value
-    country=document.getElementById('input-country').value
-    pincode=document.getElementById('input-postal-code').value
-    {{!-- window.alert(address+" "+city+" "+state+" "+country+" "+pincode) --}}
-    if((address=="")||(city=="")||(state=="")||(country=="")||(pincode==""))
-    {
-      window.alert("Enter Address details Properly")
-    }
-    else{
-      $.ajax({
-        url:'/update-address',
-        data: {
-          userId:userId,
-          address:address,
-          city:city,
-          state:state,
-          country:country,
-          pincode:pincode
-        },
-        method:'post',
-        success:(response)=>{
-          if(response.updateAddress){
-            alert("Address Updated Successfully!")
-            location.reload()
+  <script>
+    function updateAddress(userId) {
+      address = document.getElementById('input-address').value
+      city = document.getElementById('input-city').value
+      state = document.getElementById('input-state').value
+      country = document.getElementById('input-country').value
+      pincode = document.getElementById('input-postal-code').value
+
+      if ((address == "") || (city == "") || (state == "") || (country == "") || (pincode == "")) {
+        window.alert("Enter Address details Properly")
+      }
+      else {
+        $.ajax({
+          url: '/update-address',
+          data: {
+            userId: userId,
+            address: address,
+            city: city,
+            state: state,
+            country: country,
+            pincode: pincode
+          },
+          method: 'post',
+          success: (response) => {
+            if (response.updateAddress) {
+              alert("Address Updated Successfully!")
+              location.reload()
+            }
+            else {
+              alert("Address NOT Updated!")
+              document.getElementById('erorMessage').innerHTML = 'HI'
+            }
           }
-          else{
-            alert("Address NOT Updated!")
-            document.getElementById('erorMessage').innerHTML='HI'
+        })
+      }
+    }
+    function changeStatus(UserId, orderIndex, productIndex) {
+      var selectBox = document.getElementById("statusBox");
+      var selectedValue = document.getElementById("select-" + orderIndex + "," + productIndex).value;
+      //alert(selectedValue+" - "+UserId+" - "+orderIndex+" - "+productIndex);
+
+      $.ajax({
+        url: '/order-update?userId=' + UserId + '&orderIndex=' + orderIndex + '&productIndex=' + productIndex + '&status=' + selectedValue,
+        method: 'get',
+        success: (response) => {
+          if (response.status) {
+            document.getElementById("status-" + orderIndex + "," + productIndex).innerHTML = selectedValue
+
+          }
+          else {
+            document.getElementById("cancel-" + orderIndex + "," + productIndex).innerHTML = "Canceled"
+            document.getElementById("status-" + orderIndex + "," + productIndex).innerHTML = "Canceled"
+          }
+        }
+      })
+
+    }
+    function updatePasssword() {
+      confPass = document.getElementById('input-password').value
+      password = document.getElementById('confirm-password').value
+
+
+      if ((password) && (confPass) && (password == confPass)) {
+        $.ajax({
+          url: '/update-password',
+          data: {
+            password: password
+          },
+          method: 'post',
+          success: (response) => {
+            if (response.status) {
+              document.getElementById('erorMessage2').innerHTML = "Password Updated"
+              alert("Password updated, Kindly login again to use....")
+              window.location.href = '/logout-user'
+
+            }
+          }
+        })
+      }
+      else {
+        alert("x")
+      }
+
+    }
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#myTable').DataTable();
+    });
+  </script>
+  <script>
+
+  </script>
+
+  <script>
+    function ChangeOrderStatus(userId, orderId, productId) {
+      selectedValue = 'Cancel'
+      alert(orderId)
+      alert(productId)
+      alert(selectedValue)
+      alert(userId)
+      $.ajax({
+        //url: '/order-update?orderId=' + orderId + '&productId=' + productId + '&userId=' + userId + '&status=' + selectedValue,
+        url: '/order-update?orderId=' + orderId + '&productId=' + productId + '&userId=' + userId + '&status=' + selectedValue,
+        method: 'get',
+        success: (response) => {
+          if (response.status) {
+            //alert(selectedValue)
+            let SelectId = orderId + "," + productId
+            document.getElementById("status-" + orderId + "," + productId).innerHTML = selectedValue
+
+          }
+          else {
+            //alert("Not Success")
+            document.getElementById("cancel-" + orderId + "," + productId).innerHTML = "Canceled"
+            document.getElementById("status-" + orderId + "," + productId).innerHTM = "Canceled"
           }
         }
       })
     }
-  }
-  function changeStatus(UserId,orderIndex,productIndex){
-    var selectBox = document.getElementById("statusBox");
-    var selectedValue = document.getElementById("select-"+orderIndex+","+productIndex).value;
-    //alert(selectedValue+" - "+UserId+" - "+orderIndex+" - "+productIndex);
-
-    $.ajax({
-        url:'/order-update?userId='+UserId+'&orderIndex='+orderIndex+'&productIndex='+productIndex+'&status='+selectedValue,
+  </script>
+  <script>
+    function viewMore(page){
+      
+      $('#viewMoreButton').remove()
+      $.ajax({
+        url:'/view-more-orders?page='+page,
         method:'get',
         success:(response)=>{
-            if(response.status){        
-                document.getElementById("status-"+orderIndex+","+productIndex).innerHTML=selectedValue
+          console.log(response.order)
+          if(response.status){
+            //$('#viewMoreButton').hide()
+          response.order[0].productDetails.forEach(element=>{
+            $('.shopping__cart__table').append(
+              `
+              <table>
+                      <thead>
+                      </thead>
+                      <tbody>
+                        
+                        <tr>
+                          <td class="product__cart__item">
+                            <div class="product__cart__item__pic mb-2">
+                              <a href="/product-detail?id=`+element._id+`">
+                                <img src="/product-images/`+element._id+`.jpg" alt="product Img" style="width:90px ;">
+                              </a>
+                            </div>
+                            <div class="product__cart__item__text">
+                              <h6>`+element.name+`</h6>
+                              <p>`+element.quantity+` Nos.</p>
+                              <h5>&#8377; `+element.price+`</h5>
+                            </div>${
+                              element.status=='Delivered'?
+                                (
+                               ` <div class="progress mt-5" style="height: 20px;">
+                                  <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100"
+                                    aria-valuemin="0" aria-valuemax="100">
+                                    `+element.status+`
+                                  </div>
+                                </div>` 
+                                )
+                                : (
+                                  element.status=='placed'?
+                                (
+                               ` <div class="progress mt-5" style="height: 20px;">
+                                  <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="100"
+                                    aria-valuemin="0" aria-valuemax="100">
+                                    `+element.status+`
+                                  </div>
+                                </div>` 
+                                )
+                                : (
+                                  element.status=='Packed'?
+                                (
+                               ` <div class="progress mt-5" style="height: 20px;">
+                                  <div class="progress-bar bg-success" role="progressbar" style="width: 50%;" aria-valuenow="100"
+                                    aria-valuemin="0" aria-valuemax="100">
+                                    `+element.status+`
+                                  </div>
+                                </div>` 
+                                )
+                                : (
+                                  element.status=='Shipped'?
+                                (
+                               ` <div class="progress mt-5" style="height: 20px;">
+                                  <div class="progress-bar bg-success" role="progressbar" style="width: 75%;" aria-valuenow="100"
+                                    aria-valuemin="0" aria-valuemax="100">
+                                    `+element.status+`
+                                  </div>
+                                </div>` 
+                                )
+                                : (
+                                  ` <div class="progress mt-5" style="height: 20px;">
+                                  <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;" aria-valuenow="100"
+                                    aria-valuemin="0" aria-valuemax="100">
+                                    Canceled
+                                  </div>
+                                </div>`
+                                )
+                                )
+                                )
 
-            }
-            else{
-                document.getElementById("cancel-"+orderIndex+","+productIndex).innerHTML="Canceled"
-                document.getElementById("status-"+orderIndex+","+productIndex).innerHTML="Canceled"
-            }
+                                )
+                                }
+
+                            
+                          </td>
+                          <td class="product__cart__item">
+                                <h6>${response.order[0].paymentMode}</h6>
+                                <p>
+                                  ${response.order[0].addressDetails.address},
+                                  ${response.order[0].addressDetails.city},<br>
+                                  ${response.order[0].addressDetails.state},
+                                  ${response.order[0].addressDetails.country},
+                                  ${response.order[0].addressDetails.pinCode}
+                                  <br>
+                                  contact: ${response.order[0].addressDetails.contact}
+                                </p>
+
+                          </td>
+                          <td class="cart__close">
+                            <p>
+                              Placed on ${response.order[0].date} <br>
+                              Total Amount -  ${(element.price)*(element.quantity)}
+                            </p>
+                            ${
+                                (element.status!=false) ? (
+                                  
+                                `<button type="button" class="btn btn-outline-danger btn-rounded rounded-pill"
+                                onclick="ChangeOrderStatus('${response.order[0].userId}','${response.order[0]._id}','${element._id}')">
+                                  Cancel Order
+                                </button>`
+                                
+                                )
+                                :(`<p>Order Canceled</p>`)
+                              }
+                            
+                          </td>
+                        </tr>
+           
+                      </tbody>
+                    </table>
+                    
+              `
+            )
+          })
+            $('.shopping__cart__table').append(
+             ` <div class="text-center mt-4" id="viewMoreButton">
+                    <button type="button" class="btn btn-outline-success btn-rounded rounded-pill" onclick="viewMore(`+(page+1)+`)">
+                      View More
+                    </button>
+                </div>
+              `
+            )
+
+
+          }else{
+            $('.shopping__cart__table').append(
+              `
+              <div class='mt-5'>
+              <h6>This is the end of orders</h6>
+              `
+            )
+          }
+            
+          
         }
-    })
-    
-}
-function updatePasssword(){
-  confPass=document.getElementById('input-password').value
-  password=document.getElementById('confirm-password').value
+      })
+    }
+  </script>
 
 
-  if((password)&&(confPass)&&(password==confPass)){
-    $.ajax({
-      url:'/update-password',
-      data:{
-        password:password
-        },
-      method:'post',
-      success:(response)=>{
-        if(response.status){
-          document.getElementById('erorMessage2').innerHTML="Password Updated"
-          alert("Password updated, Kindly login again to use....")
-          window.location.href = '/logout-user'
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
 
-        }
-      }
-    })
-  }
-  else{
-    alert("x")
-  }
-  
-}
-</script>
-<script>
-  $(document).ready( function () {
-    $('#myTable').DataTable();
-} );
-</script>
-<script>
-
-</script>
-
-<script>
-  function ChangeOrderStatus(  userId, orderId, productId){
-    selectedValue='Cancel'
-    alert(orderId)
-    alert(productId)
-    alert(selectedValue)
-    alert(userId)
-  }
-   $.ajax({
-                url: '/order-update?orderId=' + orderId + '&productId=' + productId + '&userId=' + userId +'&status='+selectedValue,
-                method: 'get',
-                success: (response) => {
-                    if (response.status) {
-                        //alert(selectedValue)
-                        let SelectId = orderId + "," + productId
-                        document.getElementById("status-" + orderId + "," + productId).innerHTML = selectedValue
-
-                    }
-                    else {
-                        //alert("Not Success")
-                        document.getElementById("cancel-" + orderId + "," + productId).innerHTML = "Canceled"
-                        document.getElementById("status-" + orderId + "," + productId).innerHTM = "Canceled"
-                    }
-                }
-            })
-</script>
-
-
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
-  
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script

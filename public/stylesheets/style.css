@@ -4114,7 +4114,7 @@ ol {
 	color: #32325d;
   }
   
-  h2,
+  /* h2,
   .h2 {
 	font-size: 1.25rem;
   }
@@ -4127,7 +4127,7 @@ ol {
   h6,
   .h6 {
 	font-size: .625rem;
-  }
+  } */
   
   hr {
 	margin-top: 2rem;
@@ -4552,10 +4552,10 @@ ol {
 	  orphans: 3;
 	  widows: 3;
 	}
-	h2,
+	/* h2,
 	h3 {
 	  page-break-after: avoid;
-	}
+	} */
 	@page {
 	  size: a3;
 	}
