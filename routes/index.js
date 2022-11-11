@@ -1320,7 +1320,7 @@ router.get('/view-more-orders/',async(req,res)=>{
 })
 router.get('/addtoWishList/',async(req,res)=>{
   try {
-      if(req.session.user){
+  if(req.session.user){
   console.log("addtoWishList")
   let prodId=req.query.prodId
   let userId=req.session.user._id
@@ -1335,7 +1335,7 @@ router.get('/addtoWishList/',async(req,res)=>{
   } catch (error) {
     res.redirect('/404')
   }
-
+ 
 })
 router.get('/removeFromWishList/',async(req,res)=>{
   try {
