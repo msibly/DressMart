@@ -626,7 +626,7 @@ router.post("/otp-submit", (req, res, next) => {
   }
 });
 
-router.get("/Account", (req, res, next) => {
+router.get("/account", (req, res, next) => {
   if (req.session.user) {
     userHelpers.getUserDetails(req.session.user._id).then((response) => {
       userDetails = [];
