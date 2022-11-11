@@ -21,6 +21,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {{if products}}
                     {{#each products}}
                     <tr>
                         <td>{{math (math (math (math ../page '-' 1) '*' 10) '+' @index) '+' 1}}</td>
@@ -41,6 +42,8 @@
                         </td>
                     </tr>
                     {{/each}}
+
+                    {{/if}}
                 </tbody>
             </table>
             

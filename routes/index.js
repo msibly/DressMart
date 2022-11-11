@@ -322,8 +322,11 @@ router.post("/admin-login", function (req, res, next) {
 
 router.get("/list-products/", async (req, res, next) => {
   try {
-    let totalProductCount = await productHelpers.getTotalProductCount();
-  let totalPages = Math.ceil(totalProductCount / 10);
+  let totalProductCount = await productHelpers.getTotalProductCount();
+  if(totalProductCount<1)
+  {
+    try {
+     let totalPages = Math.ceil(totalProductCount / 10);
 
   let page = parseInt(req.query.page);
   if (page < 1) {
@@ -347,7 +350,22 @@ router.get("/list-products/", async (req, res, next) => {
     totalPages,
     page,
     // });
-  });
+  }); 
+    } catch (error) {
+      res.redirect('/404')
+    }
+  }
+  else{
+    res.render("admin/list-products", {
+      pageAdmin: true,
+      products:false,
+      tabProducts: true,
+      totalPages,
+      page,
+      // });
+    });
+  }
+  
   } catch (error) {
     res.redirect('/404')
   }
@@ -587,7 +605,7 @@ router.get("/edit-category/", async (req, res) => {
 
 router.post("/category-update/:id", (req, res) => {
   try {
-      let catId = req.params.id;
+  let catId = req.params.id;
   userHelpers.updateCategory(catId, req.body).then(() => {
     res.redirect("/category");
   });
