@@ -122,18 +122,15 @@ window.onload = () => { addZoom("zoomC"); };
                 <div class="row">
                     <div class="col-lg-3 col-md-3">
                         <ul class="nav nav-tabs" role="tablist">
+                            {{#each ProductInDet.images}}
                             <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">
-                                    <div class="product__thumb__pic set-bg" data-setbg="/product-images/{{ProductInDet._id}}.jpg">
+                                <a class="nav-link{{#if (stringCompare @index 0)}} active {{/if}}" data-toggle="tab" href="#tabs-{{math @index '+' 1}}" role="tab">
+                                    <div class="product__thumb__pic set-bg" data-setbg="/product-images/{{this}}">
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">
-                                    <div class="product__thumb__pic set-bg" data-setbg="/product-images/{{ProductInDet._id}}.jpg">
-                                    </div>
-                                </a>
-                            </li>
+                            {{/each}}
+                            {{!-- 
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">
                                     <div class="product__thumb__pic set-bg" data-setbg="/product-images/{{ProductInDet._id}}.jpg">
@@ -146,32 +143,31 @@ window.onload = () => { addZoom("zoomC"); };
                                         <i class="fa fa-play"></i>
                                     </div>
                                 </a>
-                            </li>
+                            </li> --}}
                         </ul>
                     </div>
                     <div class="col-lg-6 col-md-9">
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tabs-1" role="tabpanel">
+
+                            {{#each ProductInDet.images}}
+                            <div class="tab-pane {{#if (stringCompare @index 0)}} active {{/if}}" id="tabs-{{math @index '+' 1}}" role="tabpanel">
                                 <div class="product__details__pic__item">
-                                    <img src="/product-images/{{ProductInDet._id}}.jpg" alt="product Image">
+                                    <img src="/product-images/{{this}}" alt="">
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tabs-2" role="tabpanel">
-                                <div class="product__details__pic__item">
-                                    <img src="/product-images/{{ProductInDet._id}}.jpg" alt="">
-                                </div>
-                            </div>
+                            {{/each}}
+                            {{!-- 
                             <div class="tab-pane" id="tabs-3" role="tabpanel">
                                 <div class="product__details__pic__item">
                                     <img src="/product-images/{{ProductInDet._id}}.jpg" alt="">
                                 </div>
-                            </div>
-                            <div class="tab-pane" id="tabs-4" role="tabpanel">
+                            </div> --}}
+                            {{!-- <div class="tab-pane" id="tabs-4" role="tabpanel">
                                 <div class="product__details__pic__item">
                                     <img src="/product-images/{{ProductInDet._id}}.jpg" alt="product Image">
                                     <a href="https://www.youtube.com/watch?v=8PJ3_p7VqHw&list=RD8PJ3_p7VqHw&start_radio=1" class="video-popup"><i class="fa fa-play"></i></a>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
