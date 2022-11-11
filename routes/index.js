@@ -129,7 +129,7 @@ router.get("/shop/", async function (req, res, next) {
           cartCount,
           shop: true,
           page,
-          pagesCount,
+          pagesCount
         });
       } 
       else{
