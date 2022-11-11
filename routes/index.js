@@ -20,7 +20,7 @@ var storage = multer.diskStorage({
   filename: function (req, file, cb) {
     console.log("-------",file);
     cb(null, file.fieldname + '-' + new ObjectId()+'.webp')
-  }
+  },
 })
 const upload = multer({ storage: storage })  
 
@@ -48,7 +48,8 @@ router.get("/", function (req, res, next) {
 });
 
 router.get("/dressMart-home", async function (req, res, next) {
-  productHelpers.getBanners().then(async (banner) => {
+  try {
+      productHelpers.getBanners().then(async (banner) => {
     if (req.session.user) {
       //userHelpers.getOrderedProducts(req.session.user._id)
       let cartCount = await userHelpers.getCartCount(req.session.user._id);
@@ -77,10 +78,15 @@ router.get("/dressMart-home", async function (req, res, next) {
       });
     }
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/login", function (req, res, next) {
-  res.setHeader("Cache-Control", "no-store");
+  try {
+    res.setHeader("Cache-Control", "no-store");
   var user = req.session.user;
 
   if (user) {
@@ -93,14 +99,23 @@ router.get("/login", function (req, res, next) {
     });
     req.session.loginErr = false;
   }
+  } catch (error) {
+    res.redirect('/404')
+  }  
 });
 
 router.get("/register", function (req, res, next) {
-  res.render("user/signup", { pageUser: true });
+  try {
+      res.render("user/signup", { pageUser: true });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/shop/", async function (req, res, next) {
-  let totalProductCount = await productHelpers.getTotalProductCount();
+  try {
+    let totalProductCount = await productHelpers.getTotalProductCount();
 
   let pagesCount = Math.ceil(totalProductCount / 8);
 
@@ -144,26 +159,45 @@ router.get("/shop/", async function (req, res, next) {
         });
       });
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+  
 });
 
 router.get("/contact", function (req, res, next) {
-  if (req.session.user) {
+  try {
+    if (req.session.user) {
     res.render("user/contact", { pageUser: true, uname });
   } else {
     res.render("user/contact", { pageUser: true, uname: false });
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+  
 });
 
 router.get("/admin-login", function (req, res, next) {
-  res.render("admin/admin-login");
+  try {
+    res.render("admin/admin-login");
+  } catch (error) {
+    res.redirect('/404')
+  }
+  
 });
 
 router.get("/admin-index", function (req, res, next) {
-  res.render("admin/admin-index", { pageAdmin: true, tabIndex: true });
+  try {
+    res.render("admin/admin-index", { pageAdmin: true, tabIndex: true });
+  } catch (error) {
+    res.redirect('/404')
+  }
 });
 
 router.post("/logIn", function (req, res, next) {
-  userHelpers.doLogin(req.body).then((response) => {
+  try {
+      userHelpers.doLogin(req.body).then((response) => {
     if (response.status) {
       if (response.block) {
         loginErr = true;
@@ -189,10 +223,15 @@ router.post("/logIn", function (req, res, next) {
       }
     }
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/register", (req, res) => {
-  userHelpers.verifyUserRegistration(req.body).then((response) => {
+  try {
+      userHelpers.verifyUserRegistration(req.body).then((response) => {
     if (response.status) {
       // userHelpers.addUsers(req.body).then((response) => {
       //   res.redirect('/login');
@@ -222,10 +261,15 @@ router.post("/register", (req, res) => {
       }
     }
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/verify-Mobile", (req, res) => {
-  if (req.session.user) {
+  try {
+    if (req.session.user) {
     mobile = req.session.user.contact;
 
     otp = req.body.digit1 + req.body.digit2 + req.body.digit3 + req.body.digit4;
@@ -253,10 +297,15 @@ router.post("/verify-Mobile", (req, res) => {
       loginErr: "Request Timed out!",
     });
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+  
 });
 
 router.post("/admin-login", function (req, res, next) {
-  userHelpers.doAdminLogin(req.body).then((response) => {
+  try {
+    userHelpers.doAdminLogin(req.body).then((response) => {
     if (response.status) {
       req.session.admin = response.admin;
       res.redirect("/admin-index");
@@ -265,10 +314,15 @@ router.post("/admin-login", function (req, res, next) {
       res.redirect("/admin-login");
     }
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+  
 });
 
 router.get("/list-products/", async (req, res, next) => {
-  let totalProductCount = await productHelpers.getTotalProductCount();
+  try {
+    let totalProductCount = await productHelpers.getTotalProductCount();
   let totalPages = Math.ceil(totalProductCount / 10);
 
   let page = parseInt(req.query.page);
@@ -294,20 +348,35 @@ router.get("/list-products/", async (req, res, next) => {
     page,
     // });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+  
 });
 
 router.get("/users", function (req, res, next) {
-  userHelpers.getAllUsers().then((users) => {
+  try {
+    userHelpers.getAllUsers().then((users) => {
     res.render("admin/list-users", { pageAdmin: true, users, tabUsers: true });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+  
 });
 router.get("/admin-logout", function (req, res, next) {
-  req.session.admin = false;
+  try {
+      req.session.admin = false;
   res.redirect("/admin-login");
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/add-Products",  (req, res, next) =>{
-  userHelpers.getCategory().then((catCollect) => {
+  try {
+      userHelpers.getCategory().then((catCollect) => {
     res.render("admin/add-products", {
       pageAdmin: true,
       tabProductsAdd: true,
@@ -315,10 +384,15 @@ router.get("/add-Products",  (req, res, next) =>{
       catCollect,
     });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/product-add", upload.array('Image',12), (req, res, next) =>{
-  const body = Object.assign({},req.body)
+  try {
+      const body = Object.assign({},req.body)
   body.Price = parseInt(body.Price);
   body.Offer = parseInt(body.Offer);
   body.finalPrice = parseInt(body.finalPrice);
@@ -329,18 +403,28 @@ router.post("/product-add", upload.array('Image',12), (req, res, next) =>{
     //let image = req.files.Image;
     res.redirect("/list-products?page=1");
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/delete/", (req, res) => {
-  let prodId = req.query.id;
+  try {
+      let prodId = req.query.id;
 
   productHelpers.deleteProduct(prodId).then((response) => {
     res.redirect("/list-products?page=1");
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/edit/", async (req, res) => {
-  let prodId = req.query.id;
+  try {
+      let prodId = req.query.id;
   let product = await productHelpers.getProductDetails(prodId);
   res.render("admin/update-products", {
     pageAdmin: true,
@@ -348,18 +432,28 @@ router.get("/edit/", async (req, res) => {
     product,
     prodId,
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/product-update/:id",upload.array('Image',12), (req, res) => {
-  let prodId = req.params.id;
+  try {
+      let prodId = req.params.id;
   console.log("prod ID: ",prodId);
   const body=Object.assign({},req.body)
   productHelpers.updateProduct(prodId, body,req.files).then(() => {
     res.redirect("/list-products?page=1");
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 router.get("/orders", async function (req, res, next) {
-  // if(req.session.admin)
+  try {
+      // if(req.session.admin)
   // {
   let orderList = await productHelpers.getAllOrders();
   // let count=1;
@@ -369,10 +463,15 @@ router.get("/orders", async function (req, res, next) {
   // else{
   //   res.redirect("/admin-login");
   // }
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/category", function (req, res, next) {
-  userHelpers.getCategory().then((catCollect) => {
+  try {
+      userHelpers.getCategory().then((catCollect) => {
     res.render("admin/category", {
       pageAdmin: true,
       tabCategory: true,
@@ -380,24 +479,39 @@ router.get("/category", function (req, res, next) {
       add: true,
     });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/unblock", (req, res) => {
-  let blkid = req.query.id;
+  try {
+      let blkid = req.query.id;
   productHelpers.unBlockUser(blkid).then(() => {
     res.redirect("/users");
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 router.get("/block", (req, res) => {
-  let blkid = req.query.id;
+  try {
+      let blkid = req.query.id;
 
   productHelpers.blockUser(blkid).then(() => {
     res.redirect("/users");
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/product-detail/", async (req, res, next) => {
-  let prodId = req.query.id;
+  try {
+    let prodId = req.query.id;
   let category = req.query.category;
 
   await productHelpers.ProductDetails(prodId).then((ProductInDet) => {
@@ -420,16 +534,26 @@ router.get("/product-detail/", async (req, res, next) => {
       }
     });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+  
 });
 
 router.post("/category-add", (req, res, next) => {
-  userHelpers.addCategory(req.body).then((response) => {
+  try {
+      userHelpers.addCategory(req.body).then((response) => {
     res.redirect("/category");
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/delete-category/", (req, res) => {
-  let catId = req.query.id;
+  try {
+      let catId = req.query.id;
   let name = req.query.name;
 
   userHelpers.deleteCategory(catId).then((response) => {
@@ -437,9 +561,14 @@ router.get("/delete-category/", (req, res) => {
       res.redirect("/category");
     });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 router.get("/edit-category/", async (req, res) => {
-  let catId = req.query.id;
+  try {
+      let catId = req.query.id;
   let thisCat = await userHelpers.detailCategory(catId);
   userHelpers.getCategory().then((catCollect) => {
     res.render("admin/category", {
@@ -450,17 +579,27 @@ router.get("/edit-category/", async (req, res) => {
       tabCategory: true,
     });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/category-update/:id", (req, res) => {
-  let catId = req.params.id;
+  try {
+      let catId = req.params.id;
   userHelpers.updateCategory(catId, req.body).then(() => {
     res.redirect("/category");
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/add-to-cart/:id", async (req, res, next) => {
-  if (req.session.user) {
+  try {
+      if (req.session.user) {
     let prodId = req.params.id;
     let userId = req.session.user._id;
     let prodQuantity = await productHelpers.findProductQuantity(prodId);
@@ -470,12 +609,15 @@ router.get("/add-to-cart/:id", async (req, res, next) => {
   } else {
     res.json({ status: false });
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/cart", async (req, res, next) => {
-  //res.setHeader('Cache-Control', 'no-store')
-
-  if (req.session.user) {
+  try {
+    if (req.session.user) {
     try {
       let cartCount = await userHelpers.getCartCount(req.session.user._id);
 
@@ -510,10 +652,17 @@ router.get("/cart", async (req, res, next) => {
   } else {
     res.redirect("/login");
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+  //res.setHeader('Cache-Control', 'no-store')
+
+  
 });
 
 router.post("/change-product-quantity", async (req, res, next) => {
-  userHelpers.changeProductQuantity(req.body).then(async (response) => {
+  try {
+     userHelpers.changeProductQuantity(req.body).then(async (response) => {
     if (response.maximumCount) {
       res.json(response);
     } else {
@@ -531,11 +680,16 @@ router.post("/change-product-quantity", async (req, res, next) => {
         res.json(response);
       }
     }
-  });
+  }); 
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/place-order", async (req, res, next) => {
-  //res.setHeader('Cache-Control', 'no-store')
+  try {
+      //res.setHeader('Cache-Control', 'no-store')
   if (req.session.user) {
     userHelpers.getUserDetails(req.session.user._id).then(async (response) => {
       req.session.user = response.user;
@@ -558,16 +712,26 @@ router.get("/place-order", async (req, res, next) => {
   } else {
     res.redirect("/login");
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/otp-login", (req, res, next) => {
-  res.setHeader("Cache-Control", "no-store");
+  try {
+      res.setHeader("Cache-Control", "no-store");
 
   res.render("user/otp-login", { pageUser: true });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/get-otp", (req, res, next) => {
-  res.setHeader("Cache-Control", "no-store");
+  try {
+      res.setHeader("Cache-Control", "no-store");
 
   let mobile = req.body.loginMobile;
   userHelpers.findUserMobile(mobile).then((response) => {
@@ -595,10 +759,15 @@ router.post("/get-otp", (req, res, next) => {
       });
     }
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/otp-submit", (req, res, next) => {
-  res.setHeader("Cache-Control", "no-store");
+  try {
+      res.setHeader("Cache-Control", "no-store");
   mobile = req.session.mobile;
   otp = req.body.digit1 + req.body.digit2 + req.body.digit3 + req.body.digit4;
 
@@ -624,10 +793,15 @@ router.post("/otp-submit", (req, res, next) => {
       loginError: "Request Timed Out, Try again",
     });
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/account", (req, res, next) => {
-  if (req.session.user) {
+  try {
+      if (req.session.user) {
     userHelpers.getUserDetails(req.session.user._id).then((response) => {
       userDetails = [];
       userDetails = response.user;
@@ -643,23 +817,38 @@ router.get("/account", (req, res, next) => {
   } else {
     res.redirect("/login");
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/logout-user", (req, res) => {
-  res.setHeader("Cache-Control", "no-store");
+  try {
+      res.setHeader("Cache-Control", "no-store");
   req.session.user = false;
   res.redirect("/");
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/update-address", (req, res) => {
-  res.setHeader("Cache-Control", "no-store");
+  try {
+      res.setHeader("Cache-Control", "no-store");
   userHelpers.updateAddress(req.body).then((response) => {
     res.json(response);
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/product-category-view/", (req, res) => {
-  let name = req.query.name;
+  try {
+      let name = req.query.name;
   productHelpers.categoryWiseProducts(name).then((products) => {
     userHelpers.getCategory().then((catCollect) => {
       res.render("admin/category-wise-products", {
@@ -670,10 +859,15 @@ router.get("/product-category-view/", (req, res) => {
       });
     });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/order-complete", async (req, res) => {
-  //res.setHeader('Cache-Control', 'no-store')
+  try {
+      //res.setHeader('Cache-Control', 'no-store')
   if (req.session.user) {
     let date_ob = new Date();
     let date =
@@ -772,10 +966,15 @@ router.post("/order-complete", async (req, res) => {
   } else {
     res.json({ status: false });
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/verify-payment", (req, res) => {
-  let orderArray = req.session.user.purchase;
+  try {
+      let orderArray = req.session.user.purchase;
   userId = req.session.user._id;
 
   productHelpers.verifyPayment(req.body).then(async (response) => {
@@ -793,26 +992,41 @@ router.post("/verify-payment", (req, res) => {
       res.json({ status: false });
     }
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 router.get("/order-success", (req, res) => {
-  userHelpers.getUserDetails(req.session.user._id).then((response) => {
+  try {
+      userHelpers.getUserDetails(req.session.user._id).then((response) => {
     req.session.user = response.user;
     res.render("user/order-success");
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/banner-management", (req, res) => {
-  productHelpers.getBanners().then((banner) => {
+  try {
+      productHelpers.getBanners().then((banner) => {
     res.render("admin/banner-management", {
       pageAdmin: true,
       tabBanner: true,
       banner,
     });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/add-banner", (req, res) => {
-  productHelpers.addBanner(req.body.Name).then((response) => {
+  try {
+      productHelpers.addBanner(req.body.Name).then((response) => {
     id = response.id;
 
     let image = req.files.Image; 
@@ -823,26 +1037,41 @@ router.post("/add-banner", (req, res) => {
       }
     });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/delete-banner/", (req, res) => {
-  res.setHeader("Cache-Control", "no-store");
+  try {
+    res.setHeader("Cache-Control", "no-store");
   bannerId = req.query.id;
   productHelpers.deleteBanner(bannerId).then((response) => {
     res.redirect("/banner-management");
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+  
 });
 
 router.get("/multi-image", (req, res, next) => {
-  res.setHeader('Cache-Control', 'no-store')
+  try {
+      res.setHeader('Cache-Control', 'no-store')
   productHelpers.getmult().then((multImages) => {
     console.log(multImages);
     res.render("admin/multiple-image", { multImages });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/multi-image-upload", upload.array('image',12), (req, res) => {
-  // res.setHeader('Cache-Control', 'no-store')
+  try {
+    // res.setHeader('Cache-Control', 'no-store')
 
   // const obj = JSON.parse(JSON.stringify(req.body));
   const obj = Object.assign({},req.body)
@@ -852,10 +1081,15 @@ router.post("/multi-image-upload", upload.array('image',12), (req, res) => {
         res.redirect("/multi-image");
 
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+  
 });
 
 router.get("/order-update/", async (req, res) => {
-  //res.setHeader('Cache-Control', 'no-store')
+  try {
+      //res.setHeader('Cache-Control', 'no-store')
 
   let orderId = req.query.orderId;
   let productId = req.query.productId;
@@ -877,6 +1111,10 @@ router.get("/order-update/", async (req, res) => {
     .catch((error) => {
       res.json(error);
     });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 // // use the orders api to create an order
@@ -922,7 +1160,8 @@ router.get("/order-update/", async (req, res) => {
 // }
 
 router.post("/update-password", async (req, res) => {
-  const bcrypt = require("bcrypt");
+  try {
+      const bcrypt = require("bcrypt");
   let password = req.body.password;
 
   password = await bcrypt.hash(password, 10);
@@ -932,10 +1171,15 @@ router.post("/update-password", async (req, res) => {
     .then((response) => {
       res.json({ status: true });
     });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/coupon-management", async (req, res) => {
-  if (req.session.admin) {
+  try {
+      if (req.session.admin) {
     await productHelpers.getAllCoupons().then((couponCollect) => {
       res.render("admin/coupon-management", {
         pageAdmin: true,
@@ -947,9 +1191,14 @@ router.get("/coupon-management", async (req, res) => {
   } else {
     res.redirect("/admin-login");
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 router.post("/coupon-add", (req, res) => {
-  productHelpers.addCoupon(req.body).then((response) => {
+  try {
+      productHelpers.addCoupon(req.body).then((response) => {
     if (response.status) {
       req.session.admin.err = false;
       res.redirect("/coupon-management");
@@ -958,16 +1207,26 @@ router.post("/coupon-add", (req, res) => {
       res.redirect("/coupon-management");
     }
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 router.get("/delete-couon/", (req, res) => {
-  let id = req.query.id;
+  try {
+      let id = req.query.id;
   productHelpers.deleteCoupon(id).then((response) => {
     res.redirect("/coupon-management");
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.post("/verify-coupon", (req, res) => {
-  let couponCode = req.body.couponCode;
+  try {
+      let couponCode = req.body.couponCode;
   let totalAmount = req.body.totalAmount;
   productHelpers.verifyCoupon(couponCode).then((response) => {
     if (response.couponDetails) {
@@ -982,22 +1241,37 @@ router.post("/verify-coupon", (req, res) => {
       res.json({ status: false });
     }
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 
 router.get("/get-offer-price/", async (req, res) => {
-  await productHelpers.getCategory(req.query.name).then((response) => {
+  try {
+      await productHelpers.getCategory(req.query.name).then((response) => {
     res.json({ status: true, offer: response.offer });
   });
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 });
 router.post("/removeSingleartProduct/", async (req, res) => {
-  await productHelpers
+  try {
+     await productHelpers
     .removeSingleartProductFromCart(req.query.cartId, req.query.prodId)
     .then((response) => {
       res.json({ status: true });
     });
+  } catch (error) {
+    res.redirect('/404')
+  }
+ 
 });
 router.get('/view-more-orders/',async(req,res)=>{
-  let page=parseInt(req.query.page)
+  try {
+      let page=parseInt(req.query.page)
   if(req.session.user){
     console.log(req.session.user._id);
     let totalOrdersCount=await userHelpers.getTotalOrderCount(req.session.user._id)
@@ -1014,9 +1288,14 @@ router.get('/view-more-orders/',async(req,res)=>{
   {
     res.redirect('/login')
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 })
 router.get('/addtoWishList/',async(req,res)=>{
-  if(req.session.user){
+  try {
+      if(req.session.user){
   console.log("addtoWishList")
   let prodId=req.query.prodId
   let userId=req.session.user._id
@@ -1028,9 +1307,14 @@ router.get('/addtoWishList/',async(req,res)=>{
     console.log("logot");
     res.json({loginError:true})
   }
+  } catch (error) {
+    res.redirect('/404')
+  }
+
 })
 router.get('/removeFromWishList/',async(req,res)=>{
-  if(req.session.user){
+  try {
+      if(req.session.user){
     console.log("RemtoWishList")
     let prodId=req.query.prodId
     let userId=req.session.user._id
@@ -1042,6 +1326,9 @@ router.get('/removeFromWishList/',async(req,res)=>{
       console.log("logot");
       res.json({loginError:true})
     }
+  } catch (error) {
+    res.redirect('/404')
+  }
 
 })
 module.exports = router;
