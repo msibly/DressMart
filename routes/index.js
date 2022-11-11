@@ -131,7 +131,7 @@ router.get("/shop/", async function (req, res, next) {
           page,
           pagesCount,
         });
-      }
+      } 
       else{
         res.render("user/shop", {
         pageUser: true,
