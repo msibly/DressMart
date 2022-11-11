@@ -352,7 +352,14 @@ router.get("/list-products/", async (req, res, next) => {
     // });
   }); 
     } catch (error) {
-      res.redirect('/404')
+      res.render("admin/list-products", {
+        pageAdmin: true,
+        products,
+        tabProducts: true,
+        totalPages,
+        page,
+        // });
+      }); 
     }
   }
   else{
