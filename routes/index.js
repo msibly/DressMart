@@ -11,12 +11,26 @@ const accountSid = process.env.accountSid;
 const authToken = process.env.authToken;
 const serviceId=process.env.serviceId
 const client = require("twilio")(accountSid, authToken);
+const multer=require('multer')
 
-let orderArray;
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/product-images')
+  },
+  filename: function (req, file, cb) {
+    console.log("-------",file);
+    cb(null, file.fieldname + '-' + new ObjectId()+'.webp')
+  }
+})
+const upload = multer({ storage: storage })  
+
 //import fetch from 'node-fetch';
 
 var paypal = require("paypal-rest-sdk");
+const async = require("hbs/lib/async");
 const { response } = require("express");
+
+//const { response } = require("express");
 
 // paypal.configure({
 //     'mode': 'sandbox', //sandbox or live
@@ -38,6 +52,7 @@ router.get("/dressMart-home", async function (req, res, next) {
     if (req.session.user) {
       //userHelpers.getOrderedProducts(req.session.user._id)
       let cartCount = await userHelpers.getCartCount(req.session.user._id);
+      let wishList=await userHelpers.getWishList(req.session.user._id)
       productHelpers.getHomeProducts().then((products) => {
         res.render("index", {
           pageUser: true,
@@ -46,6 +61,7 @@ router.get("/dressMart-home", async function (req, res, next) {
           cartCount,
           home: true,
           banner,
+          wishList
         });
       });
     } else {
@@ -56,6 +72,7 @@ router.get("/dressMart-home", async function (req, res, next) {
           products,
           home: true,
           banner,
+          wishList:false
         });
       });
     }
@@ -289,7 +306,7 @@ router.get("/admin-logout", function (req, res, next) {
   res.redirect("/admin-login");
 });
 
-router.get("/add-Products", function (req, res, next) {
+router.get("/add-Products",  (req, res, next) =>{
   userHelpers.getCategory().then((catCollect) => {
     res.render("admin/add-products", {
       pageAdmin: true,
@@ -300,19 +317,17 @@ router.get("/add-Products", function (req, res, next) {
   });
 });
 
-router.post("/product-add", function (req, res, next) {
-  req.body.Price = parseInt(req.body.Price);
-  req.body.Offer = parseInt(req.body.Offer);
-  req.body.finalPrice = parseInt(req.body.finalPrice);
-  req.body.quantity = parseInt(req.body.quantity);
-
-  productHelpers.addProduct(req.body, (id) => {
-    let image = req.files.Image;
-    image.mv("./public/product-images/" + id + ".jpg", (err, done) => {
-      if (!err) {
-        res.redirect("/add-Products");
-      }
-    });
+router.post("/product-add", upload.array('Image',12), (req, res, next) =>{
+  const body = Object.assign({},req.body)
+  body.Price = parseInt(body.Price);
+  body.Offer = parseInt(body.Offer);
+  body.finalPrice = parseInt(body.finalPrice);
+  body.quantity = parseInt(body.quantity);
+  console.log(body);
+  console.log(req.files);
+  productHelpers.addProduct(body, req.files).then((response) => {
+    //let image = req.files.Image;
+    res.redirect("/list-products?page=1");
   });
 });
 
@@ -320,7 +335,7 @@ router.get("/delete/", (req, res) => {
   let prodId = req.query.id;
 
   productHelpers.deleteProduct(prodId).then((response) => {
-    res.redirect("/list-products");
+    res.redirect("/list-products?page=1");
   });
 });
 
@@ -335,10 +350,12 @@ router.get("/edit/", async (req, res) => {
   });
 });
 
-router.post("/product-update/:id", (req, res) => {
+router.post("/product-update/:id",upload.array('Image',12), (req, res) => {
   let prodId = req.params.id;
-  productHelpers.updateProduct(prodId, req.body).then(() => {
-    res.redirect("/list-products");
+  console.log("prod ID: ",prodId);
+  const body=Object.assign({},req.body)
+  productHelpers.updateProduct(prodId, body,req.files).then(() => {
+    res.redirect("/list-products?page=1");
   });
 });
 router.get("/orders", async function (req, res, next) {
@@ -381,7 +398,7 @@ router.get("/block", (req, res) => {
 
 router.get("/product-detail/", async (req, res, next) => {
   let prodId = req.query.id;
-  let category = req.query.Category;
+  let category = req.query.category;
 
   await productHelpers.ProductDetails(prodId).then((ProductInDet) => {
     productHelpers.categoryWiseProducts(category).then(async (products) => {
@@ -758,7 +775,7 @@ router.post("/order-complete", async (req, res) => {
 });
 
 router.post("/verify-payment", (req, res) => {
-  orderArray = req.session.user.purchase;
+  let orderArray = req.session.user.purchase;
   userId = req.session.user._id;
 
   productHelpers.verifyPayment(req.body).then(async (response) => {
@@ -798,7 +815,7 @@ router.post("/add-banner", (req, res) => {
   productHelpers.addBanner(req.body.Name).then((response) => {
     id = response.id;
 
-    let image = req.files.Image;
+    let image = req.files.Image; 
 
     image.mv("./public/product-images/" + id + ".jpg", (err, done) => {
       if (!err) {
@@ -817,27 +834,23 @@ router.get("/delete-banner/", (req, res) => {
 });
 
 router.get("/multi-image", (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store')
   productHelpers.getmult().then((multImages) => {
+    console.log(multImages);
     res.render("admin/multiple-image", { multImages });
   });
 });
 
-router.post("/multi-image-upload", (req, res) => {
-  //res.setHeader('Cache-Control', 'no-store')
+router.post("/multi-image-upload", upload.array('image',12), (req, res) => {
+  // res.setHeader('Cache-Control', 'no-store')
 
-  let name = req.body.Name;
-  productHelpers.multiImage(name).then((response) => {
-    id = response.id;
-    let Image1 = req.files.Image0;
-    let Image2 = req.files.Image1;
+  // const obj = JSON.parse(JSON.stringify(req.body));
+  const obj = Object.assign({},req.body)
 
-    Image1.mv("./public/product-images/" + id + "-0.jpg");
-    Image2.mv("./public/product-images/" + id + "-1.jpg", (err, done) => {
-      if (!err) {
+  productHelpers.multiImage(obj.Name,req.files).then((response) => {
+
         res.redirect("/multi-image");
-      } else {
-      }
-    });
+
   });
 });
 
@@ -1002,5 +1015,33 @@ router.get('/view-more-orders/',async(req,res)=>{
     res.redirect('/login')
   }
 })
+router.get('/addtoWishList/',async(req,res)=>{
+  if(req.session.user){
+  console.log("addtoWishList")
+  let prodId=req.query.prodId
+  let userId=req.session.user._id
+  await userHelpers.addtoWishList(userId,prodId).then((response)=>{
+    res.json({status:true})
+  })
+  }
+  else{
+    console.log("logot");
+    res.json({loginError:true})
+  }
+})
+router.get('/removeFromWishList/',async(req,res)=>{
+  if(req.session.user){
+    console.log("RemtoWishList")
+    let prodId=req.query.prodId
+    let userId=req.session.user._id
+    await userHelpers.removeFromWishList(userId,prodId).then((response)=>{
+      res.json({status:true})
+    })
+    }
+    else{
+      console.log("logot");
+      res.json({loginError:true})
+    }
 
+})
 module.exports = router;

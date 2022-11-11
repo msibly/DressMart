@@ -7,5 +7,6 @@ module.exports={
     ORDER_COLLECTION:'orders',
     BANNER_COLLECTION:'banners',
     MULTI_IMAGE:"multiImage",
-    COUPON_COLLECTION:'coupons'
+    COUPON_COLLECTION:'coupons',
+    WISHLIST_COLLECTION:'wishList'
 }

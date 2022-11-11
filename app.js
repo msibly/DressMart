@@ -7,6 +7,7 @@ var logger = require('morgan');
 var hbs = require('express-handlebars')
 const fetch = require('node-fetch');
 var setCookie=require('set-cookie-parser')
+const lodAsh = require('lodash');
 
 
 var session = require('express-session')
@@ -19,8 +20,10 @@ var indexRouter = require('./routes/index');
 
 var app = express();
 var db=require('./config/connection')
-var fileUpload=require('express-fileupload');
+//var fileUpload=require('express-fileupload');
 const { Cookie } = require('express-session');
+const e = require('express');
+const { count } = require('console');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -96,6 +99,26 @@ helpers:{
         return 25;
         break;
     }
+  },
+  findInWishList:function (array,value){
+    let count=0;
+    console.log('-----------------',value);
+    (array[0].list).forEach(element => {
+      console.log("--------element---------",element);
+      var result=lodAsh.isEqual(element,value)
+      console.log("result: ",result);
+      if(result){
+        count=1
+      }      
+    });
+    if(count==1){
+      console.log("------1----------")
+      return true
+    }
+    else{
+      console.log("------------f---------");
+      return false
+    }
   }
 }}))
 
@@ -120,7 +143,7 @@ app.get("/set-cookie",(req,res)=>{
 });
 
 
-app.use(fileUpload())
+//app.use(fileUpload())
 
 db.connect((err)=>{
 if(err)

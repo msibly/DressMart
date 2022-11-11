@@ -4,6 +4,24 @@
             <div class="col-md-6 justify">
                 <h2 class="text-center">Update Product</h2>
                 <form action="/product-update/{{prodId}}" enctype="multipart/form-data" method="post">
+                    <label for="">Images</label>
+                    <img class="p-2" src="/product-images/{{product._id}}.jpg" alt="" style="width: 100px;height:auto">
+                    {{#each product.images}}
+                    <img class="p-2" src="/product-images/{{this}}" alt="" style="width: 100px;height:auto">
+                    {{/each}}
+
+                    <!-- mULTIPLE iMAGE Starts-->
+                    <input type="file" id="imageCropFileInput" multiple="" accept=".jpg,.jpeg,.png" name="Image" class="form-control">
+                    <input type="hidden" id="profile_img_data">
+                    <div class="m-auto mt-4">
+                        <div class="img-preview"></div>
+                        <div id="galleryImages" class="container-flex m-auto"></div>
+                    </div>
+                    <div id="cropper" class="m-2">
+                        <canvas id="cropperImg" width="0" height="0"></canvas>
+                        <button class="cropImageBtn ml-auto" type="button" id="cropImageBtn">Crop</button>
+                    </div>
+                    <!-- mULTIPLE iMAGE Ends-->
                     <label for="">Name</label>
                     <input type="text" name="Name" class="form-control" value="{{product.Name}}">
                     <label for="">Category</label>
@@ -18,9 +36,6 @@
                     <input type="text" name="Description" class="form-control" value="{{product.Description}}">
                     <label for="">Quantity</label>
                     <input type="number" name="quantity" class="form-control" value="{{product.quantity}}">
-                    <label for="">Image</label>
-                    <img class="p-2" src="/product-images/{{product._id}}.jpg" alt="" style="width: 100px;height:auto">
-                    <input type="file" class="form-control" name="Image">
                     <button type="submit" class="btn btn-success mt-4">Submit</button>
                 </form>
             </div>
@@ -39,3 +54,227 @@
         document.getElementById('finalPrice').value=finalPrice
     }
 </script>
+<script>    
+var c;
+var galleryImagesContainer = document.getElementById('galleryImages');
+var imageCropFileInput = document.getElementById('imageCropFileInput');
+var cropperImageInitCanvas = document.getElementById('cropperImg');
+var cropImageButton = document.getElementById('cropImageBtn');
+// Crop Function On change
+  function imagesPreview(input) {
+    var cropper;
+    galleryImagesContainer.innerHTML = '';
+    var img = [];
+    if(cropperImageInitCanvas.cropper){
+      cropperImageInitCanvas.cropper.destroy();
+      cropImageButton.style.display = 'none';
+      cropperImageInitCanvas.width = 0;
+      cropperImageInitCanvas.height = 0;
+    }
+    if (input.files.length) {
+      var i = 0;
+      var index = 0;
+      for (let singleFile of input.files) {
+        var reader = new FileReader();
+        reader.onload = function(event) {
+          var blobUrl = event.target.result;
+          img.push(new Image());
+          img[i].onload = function(e) {
+            // Canvas Container
+            var singleCanvasImageContainer = document.createElement('div');
+            singleCanvasImageContainer.id = 'singleImageCanvasContainer'+index;
+            singleCanvasImageContainer.className = 'singleImageCanvasContainer';
+            // Canvas Close Btn
+            var singleCanvasImageCloseBtn = document.createElement('button');
+            var singleCanvasImageCloseBtnText = document.createTextNode('Close');
+            // var singleCanvasImageCloseBtnText = document.createElement('i');
+            // singleCanvasImageCloseBtnText.className = 'fa fa-times';
+            singleCanvasImageCloseBtn.id = 'singleImageCanvasCloseBtn'+index;
+            singleCanvasImageCloseBtn.className = 'singleImageCanvasCloseBtn';
+            singleCanvasImageCloseBtn.onclick = function() { removeSingleCanvas(this) };
+            singleCanvasImageCloseBtn.appendChild(singleCanvasImageCloseBtnText);
+            singleCanvasImageContainer.appendChild(singleCanvasImageCloseBtn);
+            // Image Canvas
+            var canvas = document.createElement('canvas');
+            canvas.id = 'imageCanvas'+index;
+            canvas.className = 'imageCanvas singleImageCanvas';
+            canvas.width = e.currentTarget.width;
+            canvas.height = e.currentTarget.height;
+            canvas.onclick = function() { cropInit(canvas.id); };
+            singleCanvasImageContainer.appendChild(canvas)
+            // Canvas Context
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(e.currentTarget,0,0);
+            // galleryImagesContainer.append(canvas);
+            galleryImagesContainer.appendChild(singleCanvasImageContainer);
+            while (document.querySelectorAll('.singleImageCanvas').length == input.files.length) {
+              var allCanvasImages = document.querySelectorAll('.singleImageCanvas')[0].getAttribute('id');
+              cropInit(allCanvasImages);
+              break;
+            };
+            urlConversion();
+            index++;
+          };
+          img[i].src = blobUrl;
+          i++;
+        }
+        reader.readAsDataURL(singleFile);
+      }
+      // addCropButton();
+      // cropImageButton.style.display = 'block';
+    }
+  }
+  imageCropFileInput.addEventListener("change", function(event){
+    imagesPreview(event.target);
+  });
+// Initialize Cropper
+  function cropInit(selector) {
+    c = document.getElementById(selector);
+    console.log(document.getElementById(selector));
+    if(cropperImageInitCanvas.cropper){
+        cropperImageInitCanvas.cropper.destroy();
+    }
+    var allCloseButtons = document.querySelectorAll('.singleImageCanvasCloseBtn');
+    for (let element of allCloseButtons) {
+      element.style.display = 'block';
+    }
+    c.previousSibling.style.display = 'none';
+    // c.id = croppedImg;
+    var ctx=c.getContext('2d');
+    var imgData=ctx.getImageData(0, 0, c.width, c.height);
+    var image = cropperImageInitCanvas;
+    image.width = c.width;
+    image.height = c.height;
+    var ctx = image.getContext('2d');
+    ctx.putImageData(imgData,0,0);
+    cropper = new Cropper(image, {
+      aspectRatio: 1 / 1,
+      preview: '.img-preview',
+      crop: function(event) {
+        // console.log(event.detail.x);
+        // console.log(event.detail.y);
+        // console.log(event.detail.width);
+        // console.log(event.detail.height);
+        // console.log(event.detail.rotate);
+        // console.log(event.detail.scaleX);
+        // console.log(event.detail.scaleY);
+        cropImageButton.style.display = 'block';
+      }
+    });
+
+  }
+// Initialize Cropper on CLick On Image
+  // function cropInitOnClick(selector) {
+  //   if(cropperImageInitCanvas.cropper){
+  //       cropperImageInitCanvas.cropper.destroy();
+  //       // cropImageButton.style.display = 'none';
+  //       cropInit(selector);
+  //       // addCropButton();
+  //       // cropImageButton.style.display = 'block';
+  //   } else {
+  //       cropInit(selector);
+  //       // addCropButton();
+  //       // cropImageButton.style.display = 'block';
+  //   }
+  // }
+// Crop Image
+  function image_crop() {
+    if(cropperImageInitCanvas.cropper){
+      var cropcanvas = cropperImageInitCanvas.cropper.getCroppedCanvas({width: 250, height: 250});
+      // document.getElementById('cropImages').appendChild(cropcanvas);
+      var ctx=cropcanvas.getContext('2d');
+        var imgData=ctx.getImageData(0, 0, cropcanvas.width, cropcanvas.height);
+        // var image = document.getElementById(c);
+        c.width = cropcanvas.width;
+        c.height = cropcanvas.height;
+        var ctx = c.getContext('2d');
+        ctx.putImageData(imgData,0,0);
+        cropperImageInitCanvas.cropper.destroy();
+        cropperImageInitCanvas.width = 0;
+        cropperImageInitCanvas.height = 0;
+        cropImageButton.style.display = 'none';
+        var allCloseButtons = document.querySelectorAll('.singleImageCanvasCloseBtn');
+        for (let element of allCloseButtons) {
+          element.style.display = 'block';
+        }
+        urlConversion();
+        // cropperImageInitCanvas.style.display = 'none';
+    } else {
+      alert('Please select any Image you want to crop');
+    }
+  }
+  cropImageButton.addEventListener("click", function(){
+    image_crop();
+  });
+// Image Close/Remove
+  function removeSingleCanvas(selector) {
+    selector.parentNode.remove();
+    urlConversion();
+  }
+// Dynamically Add Crop Btn
+  // function addCropButton() {
+  //   // add crop button
+  //     var cropBtn = document.createElement('button');
+  //     cropBtn.setAttribute('type', 'button');
+  //     cropBtn.id = 'cropImageBtn';
+  //     cropBtn.className = 'btn btn-block crop-button';
+  //     var cropBtntext = document.createTextNode('crop');
+  //     cropBtn.appendChild(cropBtntext);
+  //     document.getElementById('cropper').appendChild(cropBtn);
+  //     cropBtn.onclick = function() { image_crop(cropBtn.id); };
+  // }
+// Get Converted Url
+  function urlConversion() {
+    var allImageCanvas = document.querySelectorAll('.singleImageCanvas');
+    var convertedUrl = '';
+    for (let element of allImageCanvas) {
+      convertedUrl += element.toDataURL('image/jpeg');
+      convertedUrl += 'img_url';
+    }
+    document.getElementById('profile_img_data').value = convertedUrl;
+  }
+
+</script>
+
+<style>
+#galleryImages, #cropper{
+  width: 200px;
+  {{!-- float: left; --}}
+}
+canvas{
+  max-width: 200px;
+  display: inline-block;
+}
+#cropperImg{
+  /*max-width: 0;
+  max-height: 0;*/
+}
+#cropImageBtn{
+  display: none;
+}
+img{
+  {{!-- width: 200px; --}}
+}
+.img-preview{
+  {{!-- float: left; --}}
+}
+.singleImageCanvasContainer{
+  max-width: 200px;
+  display: inline-block;
+  position: relative;
+  margin: 2px;
+}
+.singleImageCanvasCloseBtn{
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+</style>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js" integrity="sha512-ooSWpxJsiXe6t4+PPjCgYmVfr1NS5QXJACcR/FPpsdm6kqG1FmQ2SVyg2RXeVuCRBLr0lWHnWJP6Zs1Efvxzww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" integrity="sha512-0SPWAwpC/17yYyZ/4HSllgaK7/gg9OlVozq8K7rf3J8LvCjYEEIfzzpnA2/SSjpGIunCSD18r3UhvDcu/xncWA==" crossorigin="anonymous" referrerpolicy="no-referrer" />

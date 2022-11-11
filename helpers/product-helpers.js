@@ -22,13 +22,22 @@ paypal.configure({
 });
 
 module.exports = {
-  addProduct: (product, callback) => {
-    db.get()
-      .collection("product")
-      .insertOne(product)
-      .then((data) => {
-        callback(data.insertedId);
+  addProduct: (product,image) => {
+    return new Promise(async (resolve, reject) => {     
+      product.image=image[0].filename
+      product.images=[]
+      image.forEach(element => {
+        console.log(element.filename);
+        (product.images).push(element.filename)
       });
+      console.log(product);
+      await db.get()
+        .collection("product")
+        .insertOne(product)
+        .then((response) => {
+          resolve((response))
+        });
+    })
   },
   getAllProducts: () => {
     return new Promise(async (resolve, reject) => {
@@ -63,28 +72,59 @@ module.exports = {
         });
     });
   },
-  updateProduct: (prodId, proDetails) => {
-    console.log(proDetails);
+  updateProduct: (prodId, proDetails,imageArray) => {
     return new Promise((resolve, reject) => {
-      db.get()
-        .collection(collection.PRODUCT_COLLECTION)
-        .updateOne(
-          { _id: ObjectId(prodId) },
-          {
-            $set: {
-              Name: proDetails.Name,
-              Category: proDetails.Category,
-              Price: parseInt(proDetails.Price),
-              Offer: parseInt(proDetails.Offer),
-              finalPrice: parseInt(proDetails.finalPrice),
-              Description: proDetails.Description,
-              quantity: parseInt(proDetails.quantity),
-            },
-          }
-        )
-        .then((response) => {
-          resolve();
-        });
+      if(((imageArray).length)>0){
+        proDetails.image=imageArray[0].filename
+        proDetails.images=[]
+        proDetails.image=imageArray[0].filename
+          imageArray.forEach(element => {
+            (proDetails.images).push(element.filename)
+          });
+          console.log(proDetails);
+          db.get()
+            .collection(collection.PRODUCT_COLLECTION)
+            .updateOne(
+              { _id: ObjectId(prodId) },
+              {
+                $set: {
+                  Name: proDetails.Name,
+                  Category: proDetails.Category,
+                  Price: parseInt(proDetails.Price),
+                  Offer: parseInt(proDetails.Offer),
+                  finalPrice: parseInt(proDetails.finalPrice),
+                  Description: proDetails.Description,
+                  quantity: parseInt(proDetails.quantity),
+                  image:proDetails.image,
+                  images:proDetails.images
+                },
+              }
+            )
+            .then((response) => {
+              resolve();
+            });
+      }
+      else{
+        db.get()
+            .collection(collection.PRODUCT_COLLECTION)
+            .updateOne(
+              { _id: ObjectId(prodId) },
+              {
+                $set: {
+                  Name: proDetails.Name,
+                  Category: proDetails.Category,
+                  Price: parseInt(proDetails.Price),
+                  Offer: parseInt(proDetails.Offer),
+                  finalPrice: parseInt(proDetails.finalPrice),
+                  Description: proDetails.Description,
+                  quantity: parseInt(proDetails.quantity),
+                },
+              }
+            )
+            .then((response) => {
+              resolve();
+            });
+      }
     });
   },
 
@@ -236,14 +276,20 @@ module.exports = {
         });
     });
   },
-  multiImage: (name) => {
+  multiImage: (name,img) => {
     return new Promise(async (resolve, reject) => {
+      let images=[]
+      await img.forEach(element => {
+        images.push(element.filename)
+      });
+      console.log(images);
       await db
         .get()
         .collection(collection.MULTI_IMAGE)
-        .insertOne({ name: name })
+        .insertOne({ name: name,images:images })
         .then((data) => {
-          resolve({ id: data.insertedId });
+          // resolve({ id: data.insertedId });
+          resolve({response:true})
         });
     });
   },

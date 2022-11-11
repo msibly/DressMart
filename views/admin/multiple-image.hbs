@@ -5,16 +5,18 @@
                 <h2 class="text-center">Add Banner Images</h2>
                 <form action="/multi-image-upload" enctype="multipart/form-data" method="post">
                     <label for="">Name</label>
-                    <input type="text" name="Name" id="name" class="form-control">
+                    <input type="text" name="Name" id="name" class="form-control" >
                     <label for="">Image</label>
-                    <input id="image1" type="file" name="Image0" class="form-control" data-toggle="modal" data-target="#modal" />
-                    <label for="">Image</label>
-                    <input id="image2" type="file" name="Image1" class="form-control" data-toggle="modal" data-target="#modal" />
-                    <div>
+                    <input  type="file" name="image" multiple/>
+
+                    {{!-- <label for="">Image</label>
+                    <input id="image2" type="file" name="Image1" class="form-control" data-toggle="modal" data-target="#modal" /> --}}
+                    {{!-- <div>
                         <img src="" alt="" id="hi">
-                    </div>
-                     <div class="text-center">
-                    <button type="submit" class="btn btn-success mt-4 ml-auto " onclick="return Check()">Submit</button>
+                    </div> --}}
+                     <div class="text-center" >
+                    <button type="submit" class="btn btn-success mt-4 ml-auto ">Submit</button>
+                    {{!-- <button type="submit" class="btn btn-success mt-4 ml-auto " onclick="return Check()">Submit</button> --}}
                     </div>
                 </form>
                 <br>
@@ -26,8 +28,9 @@
 <section>
     <hr>
     <div class="row d-flex justify-content-center border">
-        <img src="/product-images/{{this._id}}-0.jpg" alt="" class="m-5 border" style="width:200px; height: 150px;">
-        <img src="/product-images/{{this._id}}-1.jpg" alt="" class="m-5 border" style="width:200px; height: 150px;"> 
+        {{#each images}}
+        <img src="/product-images/{{this}}" alt="" class="m-5 border" style="width:200px; height: 150px;">
+        {{/each}}
     </div>
 </section>
 {{/each}}

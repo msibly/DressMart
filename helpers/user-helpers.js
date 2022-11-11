@@ -3,6 +3,7 @@ var collection = require("../config/collections");
 const bcrypt = require("bcrypt");
 //const { response } = require("../app");
 const { ObjectId } = require("mongodb");
+const { response } = require("express");
 // const {
 //   PRODUCT_COLLECTION,
 //   ORDER_COLLECTION,
@@ -729,4 +730,71 @@ module.exports = {
       resolve(orderCount);
     });
   },
+  addtoWishList:(userId,prodId)=>{
+    return new Promise(async (resolve, reject) => {
+      let userWishList = await db
+        .get()
+        .collection(collection.WISHLIST_COLLECTION)
+        .findOne({ user: ObjectId(userId) });
+
+        if(userWishList){
+          db.get().collection(collection.WISHLIST_COLLECTION).updateOne({user:ObjectId(userId)},
+          {
+            $push:{list:ObjectId(prodId)}
+          }
+          ).then((response)=>{
+            resolve(response)
+          })
+        }
+        else{
+          db.get().collection(collection.WISHLIST_COLLECTION).insertOne({user:ObjectId(userId),list:[ObjectId(prodId)]}).then((response)=>{
+            resolve(response)
+          })
+        }
+    })
+  },
+  getWishList:(userId)=>{
+    return new Promise(async(resolve, reject) => {
+      let wishList=await db.get().collection(collection.WISHLIST_COLLECTION).find({user:ObjectId(userId)}).toArray()
+      if(wishList){
+        console.log("WishList");
+        console.log(wishList[0].list);
+        if(wishList[0].list){
+          console.log("WishList.list");
+          {
+            if(((wishList[0].list).length)<1){
+              wishList=false
+              resolve(wishList)
+            }
+            else{
+              resolve(wishList)
+            }
+          }
+        }
+        else{
+          wishList=false
+          resolve(wishList)
+        }
+      }
+      else{
+        wishList=false
+        resolve(wishList)
+      }
+    })
+  },
+  removeFromWishList:(userId,prodId)=>{
+    return new Promise((resolve, reject) => {
+      db.get().collection(collection.WISHLIST_COLLECTION).updateOne({user:ObjectId(userId)},
+      {
+        $pull:{
+          list:{
+            $in:[ObjectId(prodId)]
+          }
+        }
+      }
+      ).then((response)=>{
+        resolve(response)
+      })
+    })
+  }
 };

@@ -112,26 +112,55 @@
 
             <div class="row product__filter ">
                 {{#each products}}
-                {{#if (compare this.quantity '>' 0)}}
-                <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
-                    <div class="product__item">
-                        <a href="/product-detail?id={{this._id}}&Category={{this.Category}}">
-                            <div class="product__item__pic set-bg" data-setbg="/product-images/{{this._id}}.jpg">
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
+                        <div class="product__item">
+                            
+                            <div class="product__item__pic set-bg" data-setbg="/product-images/{{this._id}}.jpg" >
+                                <span class="label">{{this.Offer}}% Off</span>
+                                <ul class="product__hover">
+                                    {{#if ../wishList}}
+                                    {{#if (findInWishList ../wishList this._id)}}
+                                    <li id="wishList-{{this._id}}"><a  onclick="RemoveWishlist('{{this._id}}')"><img src="img/icon/heart-filled.png" alt="Favourite" ></a></li>
+                                    {{else}}
+                                    <li id="wishList-{{this._id}}"><a  onclick="addToFav('{{this._id}}')"><img src="img/icon/heart.png" alt="Favourite" ></a></li>
+                                    {{/if}}
+                                    {{else}}
+                                    <li>
+                                    {{!-- <h2>hi</h2> --}}
+                                        <a  onclick="addToFav('{{this._id}}')"><img src="img/icon/heart.png" alt="Favourite" ></a>
+                                    </li>
+                                    {{/if}}
+                                    <li><a  onclick="viewMore('{{this._id}}','{{this.Category}}')"><img src="img/icon/eye.png" alt="Favourite" ></a></li>
+                                    {{!-- <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a></li>
+                                    <li><a href="#"><img src="img/icon/search.png" alt=""></a></li> --}}
+                                </ul>
                             </div>
-                        </a>
-                        <div class="product__item__text">
-                            <h6>{{this.Name}}</h6>
-                            <h5>
-                                {{this.Offer}}% Off
-                            </h5>
-                            <h5 class="mt-2">
-                            <del>{{this.Price}}</del> &nbsp;Now Rs. {{this.finalPrice}}
-                            </h5>
-                            <button onclick="addToCart('{{this._id}}')" class="btn btn-primary col-12">Add to Cart </button>
+                            <div class="product__item__text">
+                                <h6>{{this.Name}}</h6>
+                                {{!-- <h6>{{../wishList.user}}</h6> --}}
+                                <a href="#" class="add-cart" onclick="addToCart('{{this._id}}')">+ Add To Cart</a>
+                                {{!-- <div class="rating">
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                </div> --}}
+                                <h5>&#8377; {{this.Price}}</h5>
+                                {{!-- <div class="product__color__select">
+                                    <label for="pc-1">
+                                        <input type="radio" id="pc-1">
+                                    </label>
+                                    <label class="active black" for="pc-2">
+                                        <input type="radio" id="pc-2">
+                                    </label>
+                                    <label class="grey" for="pc-3">
+                                        <input type="radio" id="pc-3">
+                                    </label>
+                                </div> --}}
+                            </div>
                         </div>
                     </div>
-                </div>
-                {{/if}}
                 {{/each}}
             </div>
         </div>
@@ -292,3 +321,40 @@
    <script integrity = "sha384-JZR6Spejh4U02d8j0t6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmY1" crossorigin = "anonymous"> </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"> </script>
     <script src="/js/script.js "> </script>
+    <script>
+        function viewMore(id,category){
+                window.location.href='/product-detail?id='+id+'&category='+category
+        }
+        function addToFav(prodId){
+            alert("add")
+            $.ajax({
+                url:'/addtoWishList?prodId='+prodId,
+                method:'get',
+                success:(response)=>{
+                    alert(response)
+                    if(response.status)  {
+                        $(`#wishList-${prodId}`).replaceWith(`<li id="wishList-${prodId}"><a  onclick="RemoveWishlist('${prodId}')"><img src="img/icon/heart-filled.png" alt="Favourite" ></a></li>`)
+                    }
+                    if(response.loginError){
+                        window.location.href='/login'
+                    }
+                }
+            })
+        }
+        function RemoveWishlist(prodId){
+            alert("rem")
+              $.ajax({
+                url:'/removeFromWishList?prodId='+prodId,
+                method:'get',
+                success:(response)=>{
+                    if(response.status)  {
+                        alert(response)
+                        $(`#wishList-${prodId}`).replaceWith(`<li id="wishList-${prodId}"><a onclick="addToFav('${prodId}')"><img src="img/icon/heart.png" alt="Favourite" ></a></li>`)
+                    }
+                    if(response.loginError){
+                        window.location.href='/login'
+                    }
+                }
+            })
+        }
+    </script>
