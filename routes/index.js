@@ -632,13 +632,12 @@ router.get("/account", (req, res, next) => {
       userDetails = [];
       userDetails = response.user;
       userHelpers.getUserOrders(req.session.user._id,0,1).then((orders) => {
-        // res.render("user/cart", {
-        //   pageUser: true,
-        //   uname,
-        //   userDetails,
-        //   orders,
-        // });
-        res.redirect('/cart')
+        res.render("user/account", {
+          pageUser: true,
+          uname,
+          userDetails,
+          orders,
+        });
       });
     });
   } else {
