@@ -756,9 +756,9 @@ module.exports = {
   getWishList:(userId)=>{
     return new Promise(async(resolve, reject) => {
       let wishList=await db.get().collection(collection.WISHLIST_COLLECTION).find({user:ObjectId(userId)}).toArray()
-      if(wishList){
+      if(wishList.length>0){
         console.log("WishList");
-        if(wishList[0].list){
+        if(wishList[0]?.list){
           console.log(wishList[0].list);
           // console.log("WishList.list");
           {
