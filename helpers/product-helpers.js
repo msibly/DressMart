@@ -2,7 +2,7 @@ var db = require("../config/connection");
 var collection = require("../config/collections");
 //const { response } = require("../app");
 var ObjectId = require("mongodb").ObjectId;
-var Razorpay = require("razorpay");
+const Razorpay = require("razorpay");
 const { resolve } = require("path");
 var paypal = require("paypal-rest-sdk");
 require('dotenv').config;
