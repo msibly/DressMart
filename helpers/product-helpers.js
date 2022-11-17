@@ -5,6 +5,7 @@ var ObjectId = require("mongodb").ObjectId;
 var Razorpay = require("razorpay");
 const { resolve } = require("path");
 var paypal = require("paypal-rest-sdk");
+require('dotenv').config;
 const { OrderedBulkOperation } = require("mongodb");
 const { response } = require("express");
 const RazorpayKeyId = process.env.razorPay_KeyId;
