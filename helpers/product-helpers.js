@@ -10,12 +10,12 @@ const { OrderedBulkOperation } = require("mongodb");
 const { response } = require("express");
 const RazorpayKeyId = process.env.razorPay_KeyId;
 const RazorpaySecretKey = process.env.razorPay_SecretKey;
-console.log(RazorpayKeyId);
 
 var instance = new Razorpay({
   key_id: RazorpayKeyId,
   key_secret: RazorpaySecretKey,
 });
+console.log(instance);
 
 paypal.configure({
   mode: "sandbox", //sandbox   or live
