@@ -84,7 +84,7 @@ router.get("/dressMart-home", async function (req, res, next) {
 });
 
 router.get("/login", function (req, res, next) {
-  try {
+  // try {
     res.setHeader("Cache-Control", "no-store");
     var user = req.session.user;
 
@@ -98,9 +98,9 @@ router.get("/login", function (req, res, next) {
       });
       req.session.loginErr = false;
     }
-  } catch (error) {
-    res.redirect("/404");
-  }
+  // } catch (error) {
+  //   res.redirect("/404");
+  // }
 });
 
 router.get("/register", function (req, res, next) {
