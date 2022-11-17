@@ -18,7 +18,6 @@ var storage = multer.diskStorage({
     cb(null, "./public/product-images");
   },
   filename: function (req, file, cb) {
-    console.log("-------", file);
     cb(null, file.fieldname + "-" + new ObjectId() + ".webp");
   },
 });
