@@ -5,7 +5,6 @@ var ObjectId = require("mongodb").ObjectId;
 const Razorpay = require("razorpay");
 const { resolve } = require("path");
 var paypal = require("paypal-rest-sdk");
-require('dotenv').config;
 const { OrderedBulkOperation } = require("mongodb");
 const { response } = require("express");
 const RazorpayKeyId = process.env.razorPay_KeyId;
@@ -15,7 +14,7 @@ var instance = new Razorpay({
   key_id: RazorpayKeyId,
   key_secret: RazorpaySecretKey,
 });
-console.log(instance);
+
 
 paypal.configure({
   mode: "sandbox", //sandbox   or live

@@ -8,6 +8,7 @@ var hbs = require('express-handlebars')
 const fetch = require('node-fetch');
 var setCookie=require('set-cookie-parser')
 const lodAsh = require('lodash');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 
 var session = require('express-session')
