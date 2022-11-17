@@ -15,7 +15,7 @@ var instance = new Razorpay({
   key_id: RazorpayKeyId,
   key_secret: RazorpaySecretKey,
 });
-// console.log(instance);
+console.log(instance);
 
 paypal.configure({
   mode: "sandbox", //sandbox   or live
