@@ -84,7 +84,7 @@ router.get("/dressMart-home", async function (req, res, next) {
 });
 
 router.get("/login", function (req, res, next) {
-  if (user) {
+  if (req.session.user) {
     res.redirect("/");
   } else {
     res.render("user/user-login", {
