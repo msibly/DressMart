@@ -84,19 +84,16 @@ router.get("/dressMart-home", async function (req, res, next) {
 });
 
 router.get("/login", function (req, res, next) {
-
-
-    if (user) {
-      res.redirect("/");
-    } else {
-      res.render("user/user-login", {
-        title: "User-Login",
-        loginError: req.session.loginErr,
-        pageUser: true,
-      });
-      req.session.loginErr = false;
-    }
-
+  if (user) {
+    res.redirect("/");
+  } else {
+    res.render("user/user-login", {
+      title: "User-Login",
+      loginError: req.session.loginErr,
+      pageUser: true,
+    });
+    req.session.loginErr = false;
+  }
 });
 
 router.get("/register", function (req, res, next) {
@@ -117,25 +114,24 @@ router.get("/shop/", async function (req, res, next) {
       shop = true;
       page = 0;
       pagesCount = 0;
-      if(req.session.user){
+      if (req.session.user) {
         res.render("user/shop", {
           pageUser: true,
-          uname:req.session.user.name,
+          uname: req.session.user.name,
           products,
           cartCount,
           shop: true,
           page,
-          pagesCount
+          pagesCount,
         });
-      } 
-      else{
+      } else {
         res.render("user/shop", {
-        pageUser: true,
-        uname: false,
-        products,
-        shop: true,
-        page,
-        pagesCount,
+          pageUser: true,
+          uname: false,
+          products,
+          shop: true,
+          page,
+          pagesCount,
         });
       }
     } else {
@@ -181,9 +177,7 @@ router.get("/shop/", async function (req, res, next) {
             });
           });
       }
-
     }
-
   } catch (error) {
     res.redirect("/404");
   }
