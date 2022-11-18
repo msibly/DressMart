@@ -335,7 +335,7 @@ router.post("/admin-login", function (req, res, next) {
 router.get("/list-products/", async (req, res, next) => {
   try {
     let totalProductCount = await productHelpers.getTotalProductCount();
-    if (totalProductCount < 1) {
+    if (totalProductCount > 1) {
       try {
         let totalPages = Math.ceil(totalProductCount / 10);
 
