@@ -12,10 +12,13 @@ const authToken = process.env.authToken;
 const serviceId = process.env.serviceId;
 const client = require("twilio")(accountSid, authToken);
 const multer = require("multer");
+const path = require('path');
 
+const filePath = path.join(__dirname,'../')
+console.log(filePath);
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./public/product-images");
+    cb(null, path.join(__dirname, "../public/product-images"));
   },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + "-" + new ObjectId() + ".webp");
@@ -369,7 +372,6 @@ router.get("/list-products/", async (req, res, next) => {
           tabProducts: true,
           totalPages: 0,
           page: 0,
-          // });
         });
       }
     } else {
