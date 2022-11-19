@@ -325,12 +325,12 @@
                 window.location.href='/product-detail?id='+id+'&category='+category
         }
         function addToFav(prodId){
-            alert("added to wishlist")
             $.ajax({
                 url:'/addtoWishList?prodId='+prodId,
                 method:'get',
                 success:(response)=>{
-                    alert(response)
+                    alert("added to wishlist")
+                    //alert(response)
                     if(response.status)  {
                         $(`#wishList-${prodId}`).replaceWith(`<li id="wishList-${prodId}"><a  onclick="RemoveWishlist('${prodId}')"><img src="img/icon/heart-filled.png" alt="Favourite" ></a></li>`)
                     }
@@ -341,13 +341,13 @@
             })
         }
         function RemoveWishlist(prodId){
-            alert("Removed from wishlist")
               $.ajax({
                 url:'/removeFromWishList?prodId='+prodId,
                 method:'get',
                 success:(response)=>{
                     if(response.status)  {
-                        alert(response)
+                        alert("Removed from wishlist")
+                        //alert(response)
                         $(`#wishList-${prodId}`).replaceWith(`<li id="wishList-${prodId}"><a onclick="addToFav('${prodId}')"><img src="img/icon/heart.png" alt="Favourite" ></a></li>`)
                     }
                     if(response.loginError){
