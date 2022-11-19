@@ -178,7 +178,7 @@
             <input type="text" name="coupon" id="couponCode" placeholder="Enter coupon code">
             <div>
               <span id="couponButton">
-            <button type="submit" class="btn-primary ml-2 float-right" onclick="verifyCoupon({{total}})">Add coupon</button>
+            <button type="submit" class="btn-primary ml-2 float-right" onclick="verifyCoupon({{total.total}})">Add coupon</button>
 
               </span>
             </div>
@@ -371,13 +371,14 @@
 
 <script>
   function verifyCoupon(totalAmount){
+    //alert(totalAmount)
     var couponCode=document.getElementById('couponCode').value
     let oldTotalCost = totalAmount
     if(couponCode.length<5){
       alert("Please enter valied coupon code")
     }
     else{
-      alert("Coupon Applied "+couponCode+" "+oldTotalCost)
+      //alert("Coupon Applied "+couponCode+" "+oldTotalCost)
       $.ajax({
         url:'/verify-coupon',
         data:{
@@ -388,9 +389,9 @@
         success:(response)=>{
           if(response.status){
             document.getElementById('oldTotalAmount-heading').innerHTML="Previous Total Amount : "
-            document.getElementById('oldTotalAmount').innerHTML=oldTotalCost+`<hr>`
-            document.getElementById('couponDet').innerHTML=`Coupon Amount: `+response.price
-            document.getElementById('totalAmount').innerHTML=response.totalAmount
+            document.getElementById('oldTotalAmount').innerHTML=Math.ceil(oldTotalCost)+`<hr>`
+            document.getElementById('couponDet').innerHTML=`Coupon Amount: `+Math.ceil(response.price)
+            document.getElementById('totalAmount').innerHTML=Math.ceil(response.totalAmount)
             document.getElementById('couponButton').innerHTML=`<button type="button" class="btn-primary ml-2 float-right" disabled>Add coupon</button>`
             document.getElementById('error').innerHTML=""
           }
